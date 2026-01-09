@@ -506,7 +506,7 @@ dependencies = [
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/23/ec/cb6debe2db77f1ef42b25b21d93b5021474de3037cd82385e586aee72545/mkdocstrings_python-1.12.2.tar.gz", hash = "sha256:7a1760941c0b52a2cd87b960a9e21112ffe52e7df9d0b9583d04d47ed2e186f3", size = 168207, upload-time = "2024-10-19T17:54:41.672Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5b/c1/ac524e1026d9580cbc654b5d19f5843c8b364a66d30f956372cd09fd2f92/mkdocstrings_python-1.12.2-py3-none-any.whl", hash = "sha256:7f7d40d6db3cb1f5d19dbcd80e3efe4d0ba32b073272c0c0de9de2e604eda62a", size = 111759, upload-time = "2024-10-19T17:54:39.338Z" },
+  { url = "https://files.pythonhosted.org/packages/5b/c1/ac524e1026d9580cbc654b5d19f5843c8b364a66d30f956372cd09fd2f92/mkdocstrings_python-1.12.2-py3-none-any.whl", hash = "sha256:7f7d40d6db3cb1f5d19dbcd80e3efe4d0ba32b073272c0c0de9de2e604eda62a", size = 111759, upload-time = "2024-10-19T17:54:39.338Z" },
 ]
 
 [[package]]
@@ -515,11 +515,15 @@ version = "0.0.1"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
+    { name = "torch", version = "2.6.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "sys_platform == 'darwin'" },
+    { name = "torch", version = "2.6.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "sys_platform != 'darwin'" },
+    { name = "typer" },
     { name = "pandas" },
     { name = "torch", version = "2.6.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "sys_platform == 'darwin'" },
     { name = "torch", version = "2.6.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "sys_platform != 'darwin'" },
     { name = "typer" },
     { name = "ucimlrepo" },
+main
     { name = "uvicorn" },
 ]
 
@@ -538,6 +542,8 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = "==0.115.6" },
+    { name = "torch", specifier = "==2.6.0", index = "https://download.pytorch.org/whl/cpu" },
+    { name = "typer", specifier = "==0.15.1" },
     { name = "pandas", specifier = ">=2.3.3" },
     { name = "torch", specifier = "==2.6.0", index = "https://download.pytorch.org/whl/cpu" },
     { name = "typer", specifier = "==0.15.1" },
@@ -585,6 +591,7 @@ wheels = [
 ]
 
 [[package]]
+
 name = "numpy"
 version = "2.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -711,6 +718,7 @@ wheels = [
 ]
 
 [[package]]
+
 name = "pathspec"
 version = "1.0.2"
 source = { registry = "https://pypi.org/simple" }

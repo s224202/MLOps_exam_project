@@ -34,8 +34,9 @@ dev = [
     "mkdocs==1.6.1",
     "pre-commit==4.1.0",
     "pytest==8.3.4",
-    "ruff==0.1.3",
+    "ruff==0.11.5",
     "mkdocstrings-python==1.12.2",
+    "torch"
 ]
 
 
@@ -52,8 +53,12 @@ name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 explicit = true
 
-[tool.ruff]
-line-length = 120
 
 [tool.coverage.run]
 omit = ["tests/*"]
+
+[tool.ruff]
+# Exclude common directories like virtual environments and build artifacts
+exclude = [
+".git", ".venv", "build", "dist", "node_modules"
+]
