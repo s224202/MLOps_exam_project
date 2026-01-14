@@ -523,7 +523,6 @@ dependencies = [
     { name = "torch", version = "2.6.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "sys_platform != 'darwin'" },
     { name = "typer" },
     { name = "ucimlrepo" },
-main
     { name = "uvicorn" },
 ]
 
