@@ -28,3 +28,12 @@ def test_preprocess(tmp_path=Path("data/processed")):
             print(f"Column: {column}, Mean: {mean}, Std: {std}")
             assert abs(mean) < 1e-6  # Mean should be approximately 0
             assert abs(std - 1) < 1e-6  # Std should be approximately 1
+
+
+def test_getitem():
+    """Test the __getitem__ method of the WineData class."""
+    dataset = WineData(Path("data/raw/WineQT.csv"), download=True)
+    sample = dataset[0]
+    assert isinstance(sample, pd.Series)
+    assert len(sample) == len(dataset.data.columns)
+    assert "quality" in sample.index
