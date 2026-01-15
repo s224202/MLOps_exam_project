@@ -1,0 +1,3 @@
+# configs/model/default.yaml
+name: baseline
+params: {}
