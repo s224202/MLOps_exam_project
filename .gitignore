@@ -23,6 +23,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Output
+outputs/
+
 # Distribution / packaging
 .Python
 build/
