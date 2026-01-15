@@ -34,4 +34,4 @@ COPY ../reports/ reports/
 # -p flag - creates parent directories as needed and doesn't error if directories already exist
 #RUN mkdir -p /data /models # creates a directory for storing data file and  creates a directory for storing trained model files
 
-ENTRYPOINT ["uv", "run", "src/project_name/evaluate.py"]
+ENTRYPOINT ["uv", "run", "src/mlops_exam_project/evaluate.py"]
