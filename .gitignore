@@ -184,3 +184,4 @@ cython_debug/
 # Data files, these are downloaded or generated
 data/processed/processed_wine_data.csv
 data/raw/WineQT.csv
+data/

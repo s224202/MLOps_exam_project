@@ -50,6 +50,7 @@ class WineData(Dataset):
                 processed_data[column] = (processed_data[column] - mean) / std
         output_folder.mkdir(parents=True, exist_ok=True)
         output_path = output_folder / "processed_wine_data.csv"
+        processed_data.drop(columns=["color"], inplace=True)
         processed_data.to_csv(output_path, index=False)
         print(f"Processed data saved to {output_path}")
 
