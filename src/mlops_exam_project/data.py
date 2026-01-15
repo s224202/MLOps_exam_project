@@ -63,3 +63,6 @@ def preprocess(data_path: Path, output_folder: Path, download: bool = False) -> 
 
 if __name__ == "__main__":
     app()
+
+# Windows terminal command to run the script:
+# ./src/mlops_exam_project/data.py ./data/raw/Wqt.csv ./data/processed/ --download
