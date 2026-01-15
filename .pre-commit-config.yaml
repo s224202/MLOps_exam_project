@@ -18,8 +18,10 @@ repos:
     # Run the linter.
     - id: ruff-check
       args: [ --fix ]
+      types_or: [ python, pyi ]
     # Run the formatter.
     - id: ruff-format
+      types_or: [ python, pyi ]
 
 - repo: https://github.com/hhatto/autopep8
   rev: v2.3.2
