@@ -22,8 +22,3 @@ repos:
     # Run the formatter.
     - id: ruff-format
       types_or: [ python, pyi ]
-
-- repo: https://github.com/hhatto/autopep8
-  rev: v2.3.2
-  hooks:
-    - id: autopep8
