@@ -3,40 +3,30 @@ from torch import nn
 from omegaconf import DictConfig
 from dataclasses import dataclass
 
-
-    # Print kun det, I vil se (ingen config-dump)
-"""
-cfg.env.paths.data_root
-cfg.env.runtime.device
-cfg.model.name
-cfg.training.epochs
-cfg.training.hidden_dims
-cfg.batch_size
-cfg.learning_rate
-"""
 @dataclass
 class ModelConfig:
     learning_rate: float
     batch_size: int
     epochs: int
+    hidden_dims: int
+    dropout_rate: float
 
     def summary(self):
         return (f"Learning rate: {self.learning_rate}, "
                 f"Batch size: {self.batch_size}, "
                 f"Epochs: {self.epochs}, "
-                f"Input_dim: {self.input_dim}, "
                 f"Hidden_dims: {self.hidden_dims}, "
-                f"Output_dim: {self.output_dim}")
+                f"Dropout_rate: {self.dropout_rate}, "
+                )
 
 
 class WineQualityClassifier(nn.Module):
     """Feedforward neural network for wine quality classification."""
     @hydra.main(config_name="config.yaml", config_path=f"{os.getcwd()}/configs")
     def __init__(
-        self,
+        self,input_dim: int,output_dim: int,    
         cfg:DictConfig,
-        
-    ):
+        ):
         """
         Initialize the wine quality classifier.
         Args:
@@ -48,13 +38,13 @@ class WineQualityClassifier(nn.Module):
         try: 
             model_cfg: ModelConfig = hydra.utils.instantiate(cfg.model)
             super().__init__()
-            self.input_dim = cfg.training.input_dim
+            self.input_dim = input_dim  
             self.hidden_dims = cfg.training.hidden_dims
-            self.output_dim = cfg.training.output_dim
+            self.output_dim = output_dim
             self.dropout_rate = cfg.training.dropout_rate
             # Build the network layers
             layers = []
-            prev_dim = cfg.traininginput_dim
+            prev_dim = input_dim
             # Add hidden layers
             for hidden_dim in range(1,cfg.training.hidden_dims):
                 layers.append(nn.Linear(prev_dim, hidden_dim))
@@ -80,10 +70,9 @@ class WineQualityClassifier(nn.Module):
 if __name__ == "__main__":
     # Test the model
     model = WineQualityClassifier(
-        input_dim=11,
-        hidden_dims=[64, 32, 16],
-        output_dim=6,
-        dropout_rate=0.3
+        input_dim=12,
+        output_dim=10
+        
     )
     # Create a random input
     x = torch.randn(8, 11)  # Batch of 8 samples
