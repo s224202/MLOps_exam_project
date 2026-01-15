@@ -1,0 +1,7 @@
+paths:
+  data_root: data
+  output_root: outputs
+
+runtime:
+  device: cpu
+  num_workers: 2
