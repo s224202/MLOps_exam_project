@@ -1,12 +1,8 @@
 import torch, hydra, os
 from torch import nn
+from omegaconf import DictConfig
+from dataclasses import dataclass
 
-
-
-
-@hydra.main(config_name="config.yaml", config_path=f"{os.getcwd()}/configs")
-def main(cfg):
-    print(cfg.hyperparameters.batch_size, cfg.hyperparameters.learning_rate)
 
     # Print kun det, I vil se (ingen config-dump)
 """
@@ -18,14 +14,28 @@ cfg.training.hidden_dims
 cfg.batch_size
 cfg.learning_rate
 """
+@dataclass
+class ModelConfig:
+    learning_rate: float
+    batch_size: int
+    epochs: int
+
+    def summary(self):
+        return (f"Learning rate: {self.learning_rate}, "
+                f"Batch size: {self.batch_size}, "
+                f"Epochs: {self.epochs}, "
+                f"Input_dim: {self.input_dim}, "
+                f"Hidden_dims: {self.hidden_dims}, "
+                f"Output_dim: {self.output_dim}")
+
+
 class WineQualityClassifier(nn.Module):
     """Feedforward neural network for wine quality classification."""
+    @hydra.main(config_name="config.yaml", config_path=f"{os.getcwd()}/configs")
     def __init__(
         self,
-        input_dim: int = 11,
-        hidden_dims: list[int] = [64, 32],
-        output_dim: int = 6,
-        dropout_rate: float = 0.2
+        cfg:DictConfig,
+        
     ):
         """
         Initialize the wine quality classifier.
@@ -35,23 +45,27 @@ class WineQualityClassifier(nn.Module):
             output_dim: Number of output classes
             dropout_rate: Dropout probability
         """
-        super().__init__()
-        self.input_dim = input_dim
-        self.hidden_dims = hidden_dims
-        self.output_dim = output_dim
-        self.dropout_rate = dropout_rate
-        # Build the network layers
-        layers = []
-        prev_dim = input_dim
-        # Add hidden layers
-        for hidden_dim in hidden_dims:
-            layers.append(nn.Linear(prev_dim, hidden_dim))
-            layers.append(nn.ReLU())
-            layers.append(nn.Dropout(dropout_rate))
-            prev_dim = hidden_dim
-        # Add output layer
-        layers.append(nn.Linear(prev_dim, output_dim))
-        self.network = nn.Sequential(*layers)
+        try: 
+            model_cfg: ModelConfig = hydra.utils.instantiate(cfg.model)
+            super().__init__()
+            self.input_dim = cfg.training.input_dim
+            self.hidden_dims = cfg.training.hidden_dims
+            self.output_dim = cfg.training.output_dim
+            self.dropout_rate = cfg.training.dropout_rate
+            # Build the network layers
+            layers = []
+            prev_dim = cfg.traininginput_dim
+            # Add hidden layers
+            for hidden_dim in range(1,cfg.training.hidden_dims):
+                layers.append(nn.Linear(prev_dim, hidden_dim))
+                layers.append(nn.ReLU())
+                layers.append(nn.Dropout(cfg.training.dropout_rate))
+                prev_dim = hidden_dim
+            # Add output layer
+            layers.append(nn.Linear(prev_dim, cfg.training.output_dim))
+            self.network = nn.Sequential(*layers)
+        except Exception as e:
+            print(f"Error loading configuration with Hydra: {e}")
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
