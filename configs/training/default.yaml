@@ -2,3 +2,5 @@
 epochs: 1
 hidden_dims: [64, 32]
 dropout_rate: 0.5
+batch_size: 2
+lr: 0.001
