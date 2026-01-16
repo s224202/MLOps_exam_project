@@ -485,7 +485,7 @@ Even if we had a coverage of 100%, that would still not be a guarentee that the 
 >
 > Answer:
 
---- question 25 fill here ---
+--- For unittesting of the API we used regular pytest. For load testing we used locus.  ---
 
 ### Question 26
 
