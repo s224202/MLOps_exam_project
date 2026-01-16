@@ -123,7 +123,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 1 fill here ---
+--- 31 ---
 
 ### Question 2
 > **Enter the study number for each member in the group**
@@ -134,7 +134,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 2 fill here ---
+--- s224202, s183737 ---
 
 ### Question 3
 > **Did you end up using any open-source frameworks/packages not covered in the course during your project? If so**
@@ -148,7 +148,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 3 fill here ---
+--- We ended up simply using pytorch in our project. With the simplicity of the data we felt that using a framework was needlessly complicated. ---
 
 ## Coding environment
 
@@ -168,7 +168,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 4 fill here ---
+--- We used the uv package manager to manage dependencies for the project. This meant that the list of dependencies was automatically generated as we used 'uv add' to add new dependencies to the project. In order to get a complete copy of our development environment, a user would first have to install uv, then clone our repository. With the working directory set as the top of the project, the user can simply run 'uv sync --all-groups' in order to download and install the full list of dependencies. If the user was not interested in certain packages relating to the development process, such as pre-commit and ruff, they could simply run 'uv sync' to get the packages neccesary for running the code.---
 
 ### Question 5
 
@@ -184,7 +184,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 5 fill here ---
+--- We have largely preserved the structure of the template. The main part of the code in the project was written in the src folder. ---
 
 ### Question 6
 
@@ -199,7 +199,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 6 fill here ---
+--- We used ruff for linting chects.  ---
 
 ## Version control
 
@@ -233,7 +233,9 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 8 fill here ---
+--- COME BACK AND FIX COVER %
+Even if we had a coverage of 100%, that would still not be a guarentee that the code is able to run without any bugs. Tests only test specific things, so if an edge case has not been added to the tests, it can sneak in later.
+---
 
 ### Question 9
 
@@ -248,7 +250,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 9 fill here ---
+--- Our workflow included both branches and pull requests. We used branches to keep the development of different features seperate. In general our branch naming scheme was "type-specifier", where type could be a feature, devops, or similar, and specifier was the specific thing that was being added in the branch. We protected our main branch by requiring that all changes go through a pull request and be approved by at least one other group member before they were merged into main. This allowed us to be sure that the code in main should always be an up-to-date and functional version of the project. ---
 
 ### Question 10
 
@@ -452,7 +454,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 23 fill here ---
+--- An API was written for the model. The API was written using fastAPI. The api serves the model for inference in two different ways.---
 
 ### Question 24
 
