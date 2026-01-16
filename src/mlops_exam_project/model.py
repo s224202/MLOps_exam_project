@@ -22,11 +22,11 @@ class WineQualityClassifier(nn.Module):
         self.hidden_dims = hidden_dims
         self.output_dim = output_dim
         self.dropout_rate = dropout_rate
-        # Build the network layers
+        
         layers = []
         prev_dim = input_dim
-        # Add hidden layers
         for hidden_dim in hidden_dims:
+        # Add hidden layer
             layers.append(nn.Linear(prev_dim, hidden_dim))
             layers.append(nn.ReLU())
             layers.append(nn.Dropout(dropout_rate))
@@ -34,6 +34,7 @@ class WineQualityClassifier(nn.Module):
         # Add output layer
         layers.append(nn.Linear(prev_dim, output_dim))
         self.network = nn.Sequential(*layers)
+
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Forward pass through the network.
@@ -43,6 +44,7 @@ class WineQualityClassifier(nn.Module):
             Output logits of shape (batch_size, output_dim)
         """
         return self.network(x)
+    
 if __name__ == "__main__":
     # Test the model
     model = WineQualityClassifier(
