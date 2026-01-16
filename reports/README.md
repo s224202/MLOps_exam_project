@@ -52,59 +52,59 @@ will check the repositories and the code to verify your answers.
 
 ### Week 1
 
-* [X] Create a git repository (M5)
-* [X] Make sure that all team members have write access to the GitHub repository (M5)
-* [X] Create a dedicated environment for you project to keep track of your packages (M2)
-* [X] Create the initial file structure using cookiecutter with an appropriate template (M6)
-* [X] Fill out the `data.py` file such that it downloads whatever data you need and preprocesses it (if necessary) (M6)
-* [X] Add a model to `model.py` and a training procedure to `train.py` and get that running (M6)
-* [X] Remember to either fill out the `requirements.txt`/`requirements_dev.txt` files or keeping your
+* [ ] Create a git repository (M5)
+* [ ] Make sure that all team members have write access to the GitHub repository (M5)
+* [ ] Create a dedicated environment for you project to keep track of your packages (M2)
+* [ ] Create the initial file structure using cookiecutter with an appropriate template (M6)
+* [ ] Fill out the `data.py` file such that it downloads whatever data you need and preprocesses it (if necessary) (M6)
+* [ ] Add a model to `model.py` and a training procedure to `train.py` and get that running (M6)
+* [ ] Remember to either fill out the `requirements.txt`/`requirements_dev.txt` files or keeping your
     `pyproject.toml`/`uv.lock` up-to-date with whatever dependencies that you are using (M2+M6)
 * [ ] Remember to comply with good coding practices (`pep8`) while doing the project (M7)
-* [X] Do a bit of code typing and remember to document essential parts of your code (M7)
-* [-] Setup version control for your data or part of your data (M8)
-* [X] Add command line interfaces and project commands to your code where it makes sense (M9)
-* [X] Construct one or multiple docker files for your code (M10)
-* [X] Build the docker files locally and make sure they work as intended (M10)
-* [X] Write one or multiple configurations files for your experiments (M11)
-* [X] Used Hydra to load the configurations and manage your hyperparameters (M11)
-* [-] Use profiling to optimize your code (M12)
-* [X] Use logging to log important events in your code (M14)
-* [X] Use Weights & Biases to log training progress and other important metrics/artifacts in your code (M14)
-* [X] Consider running a hyperparameter optimization sweep (M14)
-* [-] Use PyTorch-lightning (if applicable) to reduce the amount of boilerplate in your code (M15)
+* [ ] Do a bit of code typing and remember to document essential parts of your code (M7)
+* [ ] Setup version control for your data or part of your data (M8)
+* [ ] Add command line interfaces and project commands to your code where it makes sense (M9)
+* [ ] Construct one or multiple docker files for your code (M10)
+* [ ] Build the docker files locally and make sure they work as intended (M10)
+* [ ] Write one or multiple configurations files for your experiments (M11)
+* [ ] Used Hydra to load the configurations and manage your hyperparameters (M11)
+* [ ] Use profiling to optimize your code (M12)
+* [ ] Use logging to log important events in your code (M14)
+* [ ] Use Weights & Biases to log training progress and other important metrics/artifacts in your code (M14)
+* [ ] Consider running a hyperparameter optimization sweep (M14)
+* [ ] Use PyTorch-lightning (if applicable) to reduce the amount of boilerplate in your code (M15)
 
 ### Week 2
 
-* [-] Write unit tests related to the data part of your code (M16)
-* [X] Write unit tests related to model construction and or model training (M16)
+* [ ] Write unit tests related to the data part of your code (M16)
+* [ ] Write unit tests related to model construction and or model training (M16)
 * [ ] Calculate the code coverage (M16)
-* [X] Get some continuous integration running on the GitHub repository (M17)
-* [-] Add caching and multi-os/python/pytorch testing to your continuous integration (M17)
-* [X] Add a linting step to your continuous integration (M17)
-* [X] Add pre-commit hooks to your version control setup (M18)
-* [-] Add a continues workflow that triggers when data changes (M19)
-* [-] Add a continues workflow that triggers when changes to the model registry is made (M19)
-* [-] Create a data storage in GCP Bucket for your data and link this with your data version control setup (M21)
+* [ ] Get some continuous integration running on the GitHub repository (M17)
+* [ ] Add caching and multi-os/python/pytorch testing to your continuous integration (M17)
+* [ ] Add a linting step to your continuous integration (M17)
+* [ ] Add pre-commit hooks to your version control setup (M18)
+* [ ] Add a continues workflow that triggers when data changes (M19)
+* [ ] Add a continues workflow that triggers when changes to the model registry is made (M19)
+* [ ] Create a data storage in GCP Bucket for your data and link this with your data version control setup (M21)
 * [ ] Create a trigger workflow for automatically building your docker images (M21)
 * [ ] Get your model training in GCP using either the Engine or Vertex AI (M21)
-* [X] Create a FastAPI application that can do inference using your model (M22)
+* [ ] Create a FastAPI application that can do inference using your model (M22)
 * [ ] Deploy your model in GCP using either Functions or Run as the backend (M23)
 * [ ] Write API tests for your application and setup continues integration for these (M24)
 * [ ] Load test your application (M24)
-* [-] Create a more specialized ML-deployment API using either ONNX or BentoML, or both (M25)
-* [-] Create a frontend for your API (M26)
+* [ ] Create a more specialized ML-deployment API using either ONNX or BentoML, or both (M25)
+* [ ] Create a frontend for your API (M26)
 
 ### Week 3
 
-* [-] Check how robust your model is towards data drifting (M27)
-* [-] Setup collection of input-output data from your deployed application (M27)
-* [-] Deploy to the cloud a drift detection API (M27)
-* [-] Instrument your API with a couple of system metrics (M28)
+* [ ] Check how robust your model is towards data drifting (M27)
+* [ ] Setup collection of input-output data from your deployed application (M27)
+* [ ] Deploy to the cloud a drift detection API (M27)
+* [ ] Instrument your API with a couple of system metrics (M28)
 * [ ] Setup cloud monitoring of your instrumented application (M28)
 * [ ] Create one or more alert systems in GCP to alert you if your app is not behaving correctly (M28)
-* [-] If applicable, optimize the performance of your data loading using distributed data loading (M29)
-* [-] If applicable, optimize the performance of your training pipeline by using distributed training (M30)
+* [ ] If applicable, optimize the performance of your data loading using distributed data loading (M29)
+* [ ] If applicable, optimize the performance of your training pipeline by using distributed training (M30)
 * [ ] Play around with quantization, compilation and pruning for you trained models to increase inference speed (M31)
 
 ### Extra
@@ -123,7 +123,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
-031
+--- question 1 fill here ---
 
 ### Question 2
 > **Enter the study number for each member in the group**
@@ -134,7 +134,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
-s951108, s224202, s183737, s260014
+--- question 2 fill here ---
 
 ### Question 3
 > **Did you end up using any open-source frameworks/packages not covered in the course during your project? If so**
@@ -168,14 +168,7 @@ s951108, s224202, s183737, s260014
 >
 > Answer:
 
-We have used the uv package to manage dependencies and packages in the project.
-To get a complete copy of our developement environment, one would have to:
-
-pip install uv
-uv venv <.venv> --python=3.12
-source .venv/bin/activate
-uv init <project-name>
-
+--- question 4 fill here ---
 
 ### Question 5
 
@@ -191,8 +184,7 @@ uv init <project-name>
 >
 > Answer:
 
-We have filled out the configs, data, dockerfiles, models, outputs, reports, src, tests.
-Notebooks folder not used. No folders deleted.
+--- question 5 fill here ---
 
 ### Question 6
 
@@ -207,10 +199,7 @@ Notebooks folder not used. No folders deleted.
 >
 > Answer:
 
-We have used Ruff for linting and formatting. Linting finds unused variables, inconsistencies, logical errors, syntax etc. Formatting takes
-care of the constistant visual look of the code.
-In larger projects with many developers, the ability to quickly read each others code is enhanced by consistent formatting. And linting errors are highly correlated
-with actual bugs, although linting doesn't guarantee you reach your end goal.
+--- question 6 fill here ---
 
 ## Version control
 
@@ -259,10 +248,7 @@ with actual bugs, although linting doesn't guarantee you reach your end goal.
 >
 > Answer:
 
-We started by defining feature branches that could be delegated to the 4 of us. We used Github as the central repository with a main branch, not directly accessible.
-Each member used Git, and used git push to upload their local branch to the remote branch. On Github, a pull request is then requested to pull the remote branch into
-the main branch. We set it up so that someone else than the pull requester had to approve the merge into main. This way, two x two eyes are always on the code, and
-the main branch is kept as well-working as possible.
+--- question 9 fill here ---
 
 ### Question 10
 
@@ -294,7 +280,7 @@ the main branch is kept as well-working as possible.
 >
 > Answer:
 
-We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. All was done as triggered workflow on pushes and pull requests by 3 yaml files.
+--- question 11 fill here ---
 
 ## Running code and tracking experiments
 
@@ -362,7 +348,6 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 
 --- question 15 fill here ---
 
-
 ### Question 16
 
 > **When running into bugs while trying to run your experiments, how did you perform debugging? Additionally, did you**
@@ -417,18 +402,16 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
-![Bucket overview](figures/BucketOverview.png)
-![Build Bucket overview](figures/BucketBuildContent.png)
+--- question 19 fill here ---
 
 ### Question 20
 
 > **Upload 1-2 images of your GCP artifact registry, such that we can see the different docker images that you have**
-> **stored. You can take inspiration from ![this figure](figures/registry.png).**
+> **stored. You can take inspiration from [this figure](figures/registry.png).**
 >
 > Answer:
 
-![Container Registry](figures/ArtifactRegistry.png)
-![Container Registry, detailed content](figures/Artifact2.png)
+--- question 20 fill here ---
 
 ### Question 21
 
@@ -437,7 +420,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
-![Cloud Build history](figures/CloudBuild.png)
+--- question 21 fill here ---
 
 ### Question 22
 
@@ -567,7 +550,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
-![Overview of System Architecture](figures/architecture.drawio.png)
+--- question 29 fill here ---
 
 ### Question 30
 
