@@ -24,11 +24,13 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # --------------------------------------
 COPY ../src/ src/
 COPY ../README.md README.md
-COPY ../data/ data/
-COPY ../models/ models/
+#COPY ../data/ data/
+#COPY ../models/ models/
+# creates a directory for storing data file and  creates a directory for storing trained model files
+# We mount trained weights and evaluation data at runtime
+RUN mkdir -p /models /data 
+
 COPY ../reports/ reports/
-
-
 
 # Data directory expected by corrupt_mnist()
 # -p flag - creates parent directories as needed and doesn't error if directories already exist
