@@ -40,10 +40,10 @@ def train(cfg: DictConfig) -> None:
     statistics = {"train_loss": [], "train_accuracy": []}
     for epoch in range(cfg.training.epochs):
         model.train()
-        for i, (img, target) in enumerate(train_dataloader):
-            img, target = img.to(DEVICE), target.to(DEVICE)
+        for i, (features, target) in enumerate(train_dataloader):
+            features, target = features.to(DEVICE), target.to(DEVICE)
             optimizer.zero_grad()
-            y_pred = model(img)
+            y_pred = model(features)
             loss = loss_fn(y_pred, target)
             loss.backward()
             optimizer.step()
@@ -56,7 +56,7 @@ def train(cfg: DictConfig) -> None:
                 print(f"Epoch {epoch}, iter {i}, loss: {loss.item()}")
 
     print("Training complete")
-    torch.save(model.state_dict(), "models/model.pth")
+    torch.save(model.state_dict(), "C:/Users/peter/Documents/ml_ops/dtu_mlops/examp/models/model.pth")
     """   fig, axs = plt.subplots(1, 2, figsize=(15, 5))
     axs[0].plot(statistics["train_loss"])
     axs[0].set_title("Train loss")
