@@ -1,0 +1,4 @@
+# configs/training/default.yaml
+epochs: 1
+hidden_dims: [64, 32]
+dropout_rate: 0.5
