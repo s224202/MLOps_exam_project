@@ -1,22 +1,36 @@
-#import matplotlib.pyplot as plt
-import torch, typer, hydra, os
+# import matplotlib.pyplot as plt
+import hydra
+import torch
+
 from data import WineData
 from model import WineQualityClassifier as MyAwesomeModel
 from omegaconf import DictConfig
 from pathlib import Path
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 
+DEVICE = torch.device(
+    "cuda"
+    if torch.cuda.is_available()
+    else "mps"
+    if torch.backends.mps.is_available()
+    else "cpu"
+)
 
 
 @hydra.main(version_base=None, config_path="../../configs", config_name="config")
 def train(cfg: DictConfig) -> None:
-
     print("Training day and night")
-    
-    model = MyAwesomeModel().to(DEVICE)
-    train_set, _ = WineData(Path("C:/Users/peter/Documents/ml_ops/dtu_mlops/examp/data/processed/processed_wine_data.csv"),False)
 
-    train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=cfg.training.batch_size)
+    model = MyAwesomeModel().to(DEVICE)
+    train_set, _ = WineData(
+        Path(
+            "C:/Users/peter/Documents/ml_ops/dtu_mlops/examp/data/processed/processed_wine_data.csv"
+        ),
+        False,
+    )
+
+    train_dataloader = torch.utils.data.DataLoader(
+        train_set, batch_size=cfg.training.batch_size
+    )
 
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=cfg.training.lr)
@@ -48,6 +62,7 @@ def train(cfg: DictConfig) -> None:
     axs[1].set_title("Train accuracy")
     fig.savefig("reports/figures/training_statistics.png")
     """
+
 
 if __name__ == "__main__":
     train()
