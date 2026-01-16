@@ -85,3 +85,49 @@ async def predict(features: dict):
         "prediction": prediction,
     }
     return response
+
+
+@app.post("/predict_onnx")
+async def predict_onnx(features: dict):
+    """Return a model prediction for the provided features using ONNX runtime.
+
+    This tries to use `WineQualityClassifier` if available. If importing
+    or running the model fails (this project uses a placeholder model),
+    a simple dummy prediction is returned so the API stays usable for
+    sanity checks.
+    """
+    prediction: Any
+
+    if WineQualityClassifier is None:
+        prediction = {"quality": 5}
+    else:
+        try:
+            import onnxruntime as ort
+            import numpy as np
+
+            # Load the ONNX model
+            ort_session = ort.InferenceSession("models/wine_quality_model.onnx")
+
+            # Prepare input data
+            feature_array = np.array(
+                [features[key] for key in sorted(features.keys())],
+                dtype=np.float32,
+            ).reshape(1, -1)
+
+            # Run inference
+            ort_inputs = {ort_session.get_inputs()[0].name: feature_array}
+            ort_outs = ort_session.run(None, ort_inputs)
+
+            # Make result JSON serializable
+            prediction = ort_outs[0].tolist()
+            logger.info(f"ONNX Prediction: {prediction}")
+        except Exception as e:
+            logger.error(f"Error during ONNX prediction: {e}")
+            prediction = {"quality": 5}
+
+    response = {
+        "message": HTTPStatus.OK.phrase,
+        "status_code": HTTPStatus.OK.value,
+        "prediction": prediction,
+    }
+    return response
