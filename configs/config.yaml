@@ -1,5 +1,5 @@
 defaults:
-  - env: local
+  - config_env: local
   - model: default
   - training: default
   - _self_
