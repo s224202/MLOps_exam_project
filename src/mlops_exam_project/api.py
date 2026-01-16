@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from http import HTTPStatus
 from typing import Any
+from loguru import logger
 
 try:
     # try package-relative import first
@@ -37,26 +38,31 @@ async def predict(features: dict):
     else:
         try:
             model = WineQualityClassifier(
-                cfg={
-                    "learning_rate": 0.001,
-                    "batch_size": 32,
-                    "training": {
-                        "input_dim": 11,
-                        "hidden_dims": [64, 32],
-                        "output_dim": 6,
-                        "dropout_rate": 0.3,
-                    },
-                }
+                input_dim=11,
+                hidden_dims=[64, 32],
+                output_dim=10,
+                dropout_rate=0.2,
             )
             try:
-                raw = model(features)
-            except Exception:
+                # convert features to tensor
+                import torch
+                import numpy as np
+
+                feature_array = np.array(
+                    [features[key] for key in sorted(features.keys())],
+                    dtype=np.float32,
+                ).reshape(1, -1)
+                feature_tensor = torch.from_numpy(feature_array)
+                raw = model(feature_tensor)
+            except Exception as e:
                 # model likely expects tensors; fall back to dummy
+                logger.error(f"Error processing features: {e}")
                 raw = None
 
             # make result JSON serializable
             if raw is None:
                 prediction = {"quality": 5}
+                logger.info("Using dummy prediction.")
             else:
                 try:
                     # torch tensors -> list
@@ -66,12 +72,11 @@ async def predict(features: dict):
                         prediction = raw.detach().cpu().tolist()
                     else:
                         prediction = raw
-                    print(prediction)
+                    logger.info(f"Prediction: {prediction}")
                 except Exception:
                     prediction = raw
         except Exception as e:
-            print(f"Error during prediction: {e}")
-
+            logger.error(f"Error during prediction: {e}")
             prediction = {"quality": 5}
 
     response = {
