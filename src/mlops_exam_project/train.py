@@ -21,6 +21,13 @@ DEVICE = torch.device(
 )
 llogger.debug("Using device: {}", DEVICE)
 
+DEVICE = torch.device(
+    "cuda"
+    if torch.cuda.is_available()
+    else "mps"
+    if torch.backends.mps.is_available()
+    else "cpu"
+)
 
 @hydra.main(
     version_base=None, config_path="../../configs", config_name="config"
@@ -206,6 +213,7 @@ def train(cfg: DictConfig) -> None:
     fig_dir = Path(cfg.figure_path)
     fig_dir.mkdir(parents=True, exist_ok=True)
     fig.savefig(fig_dir / cfg.figure_training_plot, bbox_inches="tight")
+
 
 
 if __name__ == "__main__":
