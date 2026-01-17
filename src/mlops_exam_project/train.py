@@ -68,21 +68,21 @@ def train(cfg: DictConfig) -> None:
 
     print("Training day and night")
     
-    model = MyAwesomeModel().to(DEVICE)
-    train_set, _ = WineData(Path("C:/Users/peter/Documents/ml_ops/dtu_mlops/examp/data/processed/processed_wine_data.csv"),False)
+    model = MyAwesomeModel(input_dim=12, hidden_dims=cfg.training.hidden_dims, output_dim=10, dropout_rate=cfg.training.dropout_rate).to(DEVICE)
+    train_set = WineData(Path("C:/Users/peter/Documents/ml_ops/dtu_mlops/examp/data/processed/train_data.csv"),False)
 
     train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=cfg.training.batch_size)
-
+    
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=cfg.training.lr)
 
     statistics = {"train_loss": [], "train_accuracy": []}
     for epoch in range(cfg.training.epochs):
         model.train()
-        for i, (img, target) in enumerate(train_dataloader):
-            img, target = img.to(DEVICE), target.to(DEVICE)
+        for i, (features, target) in enumerate(train_dataloader):
+            features, target = features.to(DEVICE), target.to(DEVICE)
             optimizer.zero_grad()
-            y_pred = model(img)
+            y_pred = model(features)
             loss = loss_fn(y_pred, target)
             loss.backward()
             optimizer.step()
@@ -95,7 +95,7 @@ def train(cfg: DictConfig) -> None:
                 print(f"Epoch {epoch}, iter {i}, loss: {loss.item()}")
 
     print("Training complete")
-    torch.save(model.state_dict(), "models/model.pth")
+    torch.save(model.state_dict(), "C:/Users/peter/Documents/ml_ops/dtu_mlops/examp/models/model.pth")
     """   fig, axs = plt.subplots(1, 2, figsize=(15, 5))
     axs[0].plot(statistics["train_loss"])
     axs[0].set_title("Train loss")
