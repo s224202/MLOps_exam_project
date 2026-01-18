@@ -1,5 +1,9 @@
 #import matplotlib.pyplot as plt
-import torch, typer, hydra, os
+import torch
+import typer
+import hydra
+import os
+import matplotlib.pyplot as plt
 from data import WineData
 from model import WineQualityClassifier as MyAwesomeModel
 from omegaconf import DictConfig
@@ -8,22 +12,57 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.ba
 
 
 
-@hydra.main(version_base=None, config_path="../../configs", config_name="config")
+@hydra.main(version_base=None, config_path="../../configs", config_name="config") #, data_path: Path = "data/processed", model_path: Path = "models")
 def train(cfg: DictConfig) -> None:
 
     print("Training day and night")
-    
-    model = MyAwesomeModel(input_dim=12, hidden_dims=cfg.training.hidden_dims, output_dim=10, dropout_rate=cfg.training.dropout_rate).to(DEVICE)
-    train_set = WineData(Path("C:/Users/peter/Documents/ml_ops/dtu_mlops/examp/data/processed/train_data.csv"),False)
 
-    train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=cfg.training.batch_size)
+
+
+    #  Hydra changes the working directory to outputs/<date>/<time> for each run. Use an absolute path or make the path relative to the project root.
+    #  The issue is that Hydra changes the working directory to outputs/<date>/<time> for each run.  Here we use an absolute path (or we ould make the path relative to the project root).
+    project_root = Path(__file__).parent.parent.parent # Getting the project root directory
+    #data_path = Path(cfg.data_path)
+    data_path = project_root / cfg.data_path
+    train_data_name = cfg.train_data_filename
+    val_data_name = cfg.val_data_filename
+    #test_data_name = cfg.test_data_filename
+    #model_path = Path(cfg.model_path)
+    model_path = project_root / cfg.model_path
+    model_name = cfg.model_name
+
+    # print working directory
+    print(f"Working directory: {os.getcwd()}")
+    print(f"Project root: {project_root}")
+    print(f"Using device: {DEVICE}")
+    print(f"Training configuration: {cfg.training}")
+    print(f"Training data path: {data_path / train_data_name}")
+    print(f"Validation data path: {data_path / val_data_name}")
+    print(f"Model will be saved to: {model_path / model_name}")
+
     
+    model = MyAwesomeModel(input_dim=12, hidden_dims=cfg.training.hidden_dims, output_dim=6, dropout_rate=cfg.training.dropout_rate).to(DEVICE)
+    train_set = WineData(data_path / train_data_name, False)
+    val_set = WineData(data_path / val_data_name, False)
+    train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=cfg.training.batch_size)
+    val_dataloader = torch.utils.data.DataLoader(val_set, batch_size=cfg.training.batch_size)
+
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=cfg.training.lr)
 
-    statistics = {"train_loss": [], "train_accuracy": []}
+    statistics = {  "train_loss": [],
+                    "train_accuracy": [],
+                    "epoch_loss": [],
+                    "epoch_accuracy": [],
+                    "val_loss": [],
+                    "val_accuracy": []
+                }
     for epoch in range(cfg.training.epochs):
         model.train()
+        epoch_loss = 0.0
+        epoch_correct = 0
+        epoch_total = 0
+
         for i, (features, target) in enumerate(train_dataloader):
             features, target = features.to(DEVICE), target.to(DEVICE)
             optimizer.zero_grad()
@@ -31,23 +70,76 @@ def train(cfg: DictConfig) -> None:
             loss = loss_fn(y_pred, target)
             loss.backward()
             optimizer.step()
-            statistics["train_loss"].append(loss.item())
 
+
+            # Record batch statistics
+            statistics["train_loss"].append(loss.item())
             accuracy = (y_pred.argmax(dim=1) == target).float().mean().item()
             statistics["train_accuracy"].append(accuracy)
+
+            # Accumulate epoch statistics
+            epoch_loss += loss.item()
+            epoch_correct += (y_pred.argmax(dim=1) == target).sum().item()
+            epoch_total += target.size(0)
 
             if i % 100 == 0:
                 print(f"Epoch {epoch}, iter {i}, loss: {loss.item()}")
 
+        # Calculate epoch averages
+        avg_loss = epoch_loss / len(train_dataloader)
+        avg_accuracy = epoch_correct / epoch_total
+        statistics["epoch_loss"].append(avg_loss)
+        statistics["epoch_accuracy"].append(avg_accuracy)
+
+        # do validation every epoch
+        model.eval()     
+        with torch.no_grad():
+            val_accuracy = 0
+            val_loss = 0
+            val_steps = 0
+            for features, target in val_dataloader:
+                features, target = features.to(DEVICE), target.to(DEVICE)
+                y_pred = model(features)
+                loss = loss_fn(y_pred, target)
+                val_loss += loss.item()
+                accuracy = (y_pred.argmax(dim=1) == target).float().mean().item()
+                val_accuracy += accuracy
+                val_steps += 1
+            val_accuracy /= val_steps
+            val_loss /= val_steps
+
+            statistics["val_loss"].append(val_loss)
+            statistics["val_accuracy"].append(val_accuracy)
+
+
+            print(f"Epoch {epoch}, Validation loss: {val_loss}, Validation accuracy: {val_accuracy}")   
+
     print("Training complete")
-    torch.save(model.state_dict(), "C:/Users/peter/Documents/ml_ops/dtu_mlops/examp/models/model.pth")
-    """   fig, axs = plt.subplots(1, 2, figsize=(15, 5))
-    axs[0].plot(statistics["train_loss"])
-    axs[0].set_title("Train loss")
-    axs[1].plot(statistics["train_accuracy"])
-    axs[1].set_title("Train accuracy")
-    fig.savefig("reports/figures/training_statistics.png")
-    """
+    torch.save(model.state_dict(), model_path / model_name)
+    print(f"Model saved to {model_path / model_name}")
+
+    # Plot training statistics
+    fig, axs = plt.subplots(1, 2, figsize=(15, 5))
+   # axs[0].plot(statistics["train_loss"],  marker='o', color='blue', markersize=2, label='Train Loss')
+    axs[0].plot(statistics["epoch_loss"],  marker='o', color='blue', markersize=2, label='Train Loss')
+    axs[0].plot(statistics["val_loss"], marker='o', color='orange', markersize=2, label='Validation Loss')
+    axs[0].set_xlabel("Epoch")
+    axs[0].set_title("Loss")
+    axs[0].set_xticks(range(1, cfg.training.epochs ))  
+    axs[0].set_xticklabels(range(1, cfg.training.epochs ))
+    axs[0].legend()
+    #axs[1].plot(statistics["train_accuracy"], marker='o', color='blue', markersize=2, label='Train Accuracy')
+    axs[1].plot(statistics["epoch_accuracy"], marker='o', color='blue', markersize=2, label='Train Accuracy')
+    axs[1].plot(statistics["val_accuracy"], marker='o', color='orange', markersize=2, label='Validation Accuracy')
+    axs[1].set_xlabel("Epoch")
+    axs[1].set_title("Accuracy")
+    axs[1].set_xticks(range(1, cfg.training.epochs ))    
+    axs[1].set_xticklabels(range(1, cfg.training.epochs ))
+    axs[1].legend()
+    fig.savefig(project_root / cfg.figure_path / cfg.figure_training_plot, bbox_inches='tight') # dpi=150,
+
+    print(f"Training plots saved to {project_root / cfg.figure_path / cfg.figure_training_plot}")
+        
 
 if __name__ == "__main__":
     train()
