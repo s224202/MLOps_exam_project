@@ -42,6 +42,13 @@ class WineData(Dataset):
         """Return a given sample from the dataset."""
         features = self.data.iloc[index].drop("quality").values.astype(float)
         target = self.data.iloc[index]["quality"]
+
+        # Convert quality scores to classification labels (0-indexed)
+        # Wine quality ranges from 3-8.  We convert to 0-5
+        target = target - 3
+
+
+
         return torch.tensor(features, dtype=torch.float32), torch.tensor(target, dtype=torch.long)
     
     def preprocess(self, output_folder: Path) -> None:
@@ -53,6 +60,15 @@ class WineData(Dataset):
                 mean = processed_data[column].mean()
                 std = processed_data[column].std()
                 processed_data[column] = (processed_data[column] - mean) / std
+
+
+                # use min-max scaling instead
+                min_val = processed_data[column].min()
+                max_val = processed_data[column].max()
+                processed_data[column] = (processed_data[column] - min_val) / (max_val - min_val)
+
+
+
         output_folder.mkdir(parents=True, exist_ok=True)
         output_path = output_folder / "processed_wine_data.csv"
         processed_data.drop(columns=["color"], inplace=True)
