@@ -9,3 +9,23 @@ hydra:
     dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
   job:
     chdir: true
+
+
+ 
+# Data and model paths and filenames
+data_path: ./data/processed  # Path to processed data directory
+train_data_filename: train_data.csv  # Data filename
+val_data_filename: val_data.csv  # Validation data filename
+test_data_filename: test_data.csv  # Test data filename
+model_path: ./models  # Path to model storage directory
+model_name: model.pth  # Model filename
+
+# This makes it easier to configure different model filenames without changing the code, such as using timestamps or experiment names
+# model_name: model_${now:%Y%m%d_%H%M%S}.pth
+
+# Figure paths and filenames (if needed in future)
+figure_path: ./reports/figures  # Path to figures directory
+figure_training_plot: training_plot.png  # Figure filename
+figure_training_accuracy_plot: training_accuracy_plot.png  # Figure filename
+figure_training_loss_plot: training_loss_plot.png  # Figure filename
+figure_visualization: performance_visualization.png  # Figure filename
