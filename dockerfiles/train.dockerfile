@@ -35,3 +35,4 @@ COPY ../reports/ reports/
 #COPY ../config.yaml config.yaml 
 
 ENTRYPOINT ["uv", "run", "src/mlops_exam_project/train.py"]
+

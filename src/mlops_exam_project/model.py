@@ -48,9 +48,10 @@ class WineQualityClassifier(nn.Module):
 if __name__ == "__main__":
     # Test the model
     model = WineQualityClassifier(
-        input_dim=12,
-        output_dim=10
-        
+        input_dim=11,
+        hidden_dims=[64, 32, 16],
+        output_dim=6,
+        dropout_rate=0.3
     )
     # Create a random input
     x = torch.randn(8, 11)  # Batch of 8 samples
