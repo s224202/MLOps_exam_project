@@ -32,6 +32,8 @@ def test_getitem():
     """Test the __getitem__ method of the WineData class."""
     dataset = WineData(Path("data/raw/WineQT.csv"), download=True)
     sample = dataset[0]
-    assert isinstance(sample, torch.Tensor)
-    assert len(sample) == len(dataset.data.columns)
-    assert "quality" in sample.index
+    assert isinstance(sample[0], torch.Tensor)
+    assert isinstance(sample[1], torch.Tensor)
+    assert len(sample[0]) == len(dataset.data.columns) - 1
+    assert isinstance(sample[1].item(), float)
+    assert 0 <= sample[1] <= 5
