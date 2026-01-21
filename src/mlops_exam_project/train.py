@@ -189,7 +189,19 @@ def train(cfg: DictConfig) -> None:
     axs[1].set_xticks(range(1, cfg.training.epochs ))    
     axs[1].set_xticklabels(range(1, cfg.training.epochs ))
     axs[1].legend()
-    fig.savefig(project_root / cfg.figure_path / cfg.figure_training_plot, bbox_inches='tight') # dpi=150,
+
+
+ 
+    
+    #fig.savefig(project_root / cfg.figure_path / cfg.figure_training_plot, bbox_inches='tight') # dpi=150,
+
+
+
+    # changes to save in reports/figures instead of figures/; needed for the docker + hydra setup
+    fig_dir = Path(cfg.figure_path)
+    fig_dir.mkdir(parents=True, exist_ok=True)
+    fig.savefig(fig_dir / cfg.figure_training_plot, bbox_inches="tight")
+
 
     print(f"Training plots saved to {project_root / cfg.figure_path / cfg.figure_training_plot}")
         
