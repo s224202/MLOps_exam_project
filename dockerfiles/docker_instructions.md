@@ -19,7 +19,7 @@ docker build -f dockerfiles/train.dockerfile . -t train:latest
 
 
 
-## Run the training container 
+## Run the training container
 
 ### with specified arguments
 ```bash
@@ -32,11 +32,11 @@ docker run --name experiment1 train:latest --lr 1e-3 --batch-size 16 --epochs 1
 
 ### with default arguments
 ```bash
-docker run --name {container_name} train:latest 
+docker run --name {container_name} train:latest
 ```
 Example:
 ```bash
-docker run --name experiment1 train:latest 
+docker run --name experiment1 train:latest
 ```
 
 
@@ -81,7 +81,7 @@ or automatically delete the container after it exits by including `--rm`:
 ```bash
 docker run --rm --name experiment1 train:latest
 ```
-or 
+or
 ```bash
 docker run  --rm -v $(pwd)/models:/models/ \
             -v $(pwd)/reports/figures:/reports/figures \
@@ -90,7 +90,7 @@ docker run  --rm -v $(pwd)/models:/models/ \
 
 If it might be running, force-remove:
 ```bash
-docker rm -f experiment3 
+docker rm -f experiment3
 ```
 
 
@@ -129,7 +129,4 @@ docker run --rm --name evaluate \
     -v $(pwd)/data:/data \
     evaluate:latest \
     /models/model.pth
-``` 
-
-
-
+```
