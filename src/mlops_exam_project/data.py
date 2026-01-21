@@ -1,5 +1,4 @@
 from pathlib import Path
-import typer
 from torch.utils.data import Dataset
 import torch
 
@@ -36,7 +35,7 @@ class WineData(Dataset):
                     f"Data file not found at {self.data_path}. If you want to download it, run with '--download'"
                 )
         self.data = pd.read_csv(self.data_path)
-    
+
     def __len__(self) -> int:
         """Return the length of the dataset."""
         return len(self.data)
@@ -49,28 +48,26 @@ class WineData(Dataset):
         # Convert quality scores to classification labels (0-indexed)
         # Wine quality ranges from 3-8.  We convert to 0-5
         target = target - 3
+        return torch.tensor(features, dtype=torch.float32), torch.tensor(
+            target, dtype=torch.float32
+        )
 
-
-
-        return torch.tensor(features, dtype=torch.float32), torch.tensor(target, dtype=torch.long)
-    
     def preprocess(self, output_folder: Path) -> None:
         """Preprocess the raw data to have zero mean and unit variance and save it to the output folder."""
-        processed_data = self.data.copy()   
-        
+        processed_data = self.data.copy()
+
         for column in processed_data.columns:
             if column != "quality":  # Since we don't want to scale the target variable
                 mean = processed_data[column].mean()
                 std = processed_data[column].std()
                 processed_data[column] = (processed_data[column] - mean) / std
 
-
                 # use min-max scaling instead
                 min_val = processed_data[column].min()
                 max_val = processed_data[column].max()
-                processed_data[column] = (processed_data[column] - min_val) / (max_val - min_val)
-
-
+                processed_data[column] = (processed_data[column] - min_val) / (
+                    max_val - min_val
+                )
 
         output_folder.mkdir(parents=True, exist_ok=True)
         output_path = output_folder / "processed_wine_data.csv"
@@ -79,7 +76,12 @@ class WineData(Dataset):
         print(f"Processed data saved to {output_path}")
 
 
-def split_data(data, data_path,train_test_split_ratio: float = 0.8, train_val_split_ratio: float = 0.9) -> None:
+def split_data(
+    data,
+    data_path,
+    train_test_split_ratio: float = 0.8,
+    train_val_split_ratio: float = 0.9,
+) -> None:
     print("Splitting data into train, test, and validation sets...")
     print(f"Train/Test split ratio: {train_test_split_ratio}")
     print(f"Train/Validation split ratio: {train_val_split_ratio}")
@@ -123,6 +125,7 @@ def preprocess(
     print("Splitting data...")
     split_data(dataset.data, output_folder, train_test_split_ratio=train_test_split_ratio, train_val_split_ratio=train_val_split_ratio)
 
+
 if __name__ == "__main__":
     print("Starting data preprocessing...")
     typer.run(preprocess)
@@ -134,7 +137,7 @@ if __name__ == "__main__":
     #     train_val_split_ratio=0.9
     # )       
     print("Data preprocessing completed.")
-    
+
 
 # Windows terminal command to run the script:
 # ./src/mlops_exam_project/data.py ./data/raw/Wqt.csv ./data/processed/ --download
