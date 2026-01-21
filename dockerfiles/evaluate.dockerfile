@@ -28,7 +28,7 @@ COPY ../README.md README.md
 #COPY ../models/ models/
 # creates a directory for storing data file and  creates a directory for storing trained model files
 # We mount trained weights and evaluation data at runtime
-RUN mkdir -p /models /data 
+RUN mkdir -p /models /data
 
 COPY ../reports/ reports/
 

@@ -27,12 +27,11 @@ COPY ../src/ src/
 COPY ../data/ data/
 # COPY ../models/ models/
 # creates a directory for storing trained model files (avoiding copying existing model files)
-RUN mkdir -p models 
+RUN mkdir -p models
 COPY ../reports/ reports/
 
 
 # If you have a config file, uncomment the following line to copy it
-#COPY ../config.yaml config.yaml 
+#COPY ../config.yaml config.yaml
 
 ENTRYPOINT ["uv", "run", "src/mlops_exam_project/train.py"]
-

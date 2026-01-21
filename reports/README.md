@@ -258,7 +258,7 @@ In larger projects with many developers, the ability to quickly read each others
 > Answer:
 
 We started by defining feature branches that could be delegated to the 4 of us. We used Github as the central repository with a main branch, not directly accessible.
-Each member used Git, and used git push to upload their local branch to the remote branch. On Github, a pull request is then requested to pull the remote branch into 
+Each member used Git, and used git push to upload their local branch to the remote branch. On Github, a pull request is then requested to pull the remote branch into
 the main branch. We set it up so that someone else than the pull requester had to approve the merge into main. This way, two x two eyes are always on the code, and
 the main branch is kept as well-working as possible.
 
