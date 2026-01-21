@@ -16,6 +16,9 @@ class WineData(Dataset):
         self.data_path = data_path
         if not self.data_path.exists():
             if download:
+
+                print(f"Data file not found at {self.data_path}. Downloading from UCI ML Repository...")
+
                 wine_quality = fetch_ucirepo(id=186)
                 print(wine_quality.data.keys())
                 os.makedirs(self.data_path.parent, exist_ok=True)
@@ -78,6 +81,11 @@ class WineData(Dataset):
 
 def split_data(data, data_path,train_test_split_ratio: float = 0.8, train_val_split_ratio: float = 0.9) -> None:
     print("Splitting data into train, test, and validation sets...")
+    print(f"Train/Test split ratio: {train_test_split_ratio}")
+    print(f"Train/Validation split ratio: {train_val_split_ratio}")
+
+
+
     train_data, test_data = train_test_split(data, test_size=1-train_test_split_ratio, random_state=42, stratify=data["quality"])
     train_data, val_data = train_test_split(train_data, test_size=1-train_val_split_ratio, random_state=42, stratify=train_data["quality"]) 
 
@@ -85,25 +93,46 @@ def split_data(data, data_path,train_test_split_ratio: float = 0.8, train_val_sp
     test_data = test_data.reset_index(drop=True)
     val_data = val_data.reset_index(drop=True)
 
+
+    print(f"Train data size: {len(train_data)}")
+    print(f"Test data size: {len(test_data)}")
+    print(f"Validation data size: {len(val_data)}")
+
+    print("Saving split data...")
     train_data.to_csv(data_path / "train_data.csv", index=False)
     test_data.to_csv(data_path / "test_data.csv", index=False) 
-    val_data.to_csv(data_path / "val_data.csv", index=False)        
+    val_data.to_csv(data_path / "val_data.csv", index=False)   
+
+    print(f"Train, test, and validation data saved to {data_path}")
+    print("Data splitting completed.")     
 
 
-def preprocess(data_path: Path, output_folder: Path, download: bool = False) -> None:
+
+def preprocess(
+    data_path: Path = typer.Option(Path("data/raw/Wqt.csv"), help="Path to raw data"),
+    output_folder: Path = typer.Option(Path("data/processed/"), help="Output folder for processed data"),
+    download: bool = typer.Option(True, help="Download data if not found"),
+    train_test_split_ratio: float = typer.Option(0.8, help="Train/test split ratio"),
+    train_val_split_ratio: float = typer.Option(0.9, help="Train/validation split ratio")
+) -> None:
+#def preprocess(data_path: Path = Path("data/raw/Wqt.csv"), output_folder: Path = Path("data/processed/"), download: bool = True, train_test_split_ratio: float = 0.8, train_val_split_ratio: float = 0.9) -> None:
+# def preprocess(data_path: Path, output_folder: Path, download: bool = False, train_test_split_ratio: float = 0.8, train_val_split_ratio: float = 0.9) -> None:
     print("Preprocessing data...")
     dataset = WineData(data_path, download=download)
     dataset.preprocess(output_folder)
     print("Splitting data...")
-    split_data(dataset.data, output_folder)
+    split_data(dataset.data, output_folder, train_test_split_ratio=train_test_split_ratio, train_val_split_ratio=train_val_split_ratio)
 
 if __name__ == "__main__":
     print("Starting data preprocessing...")
-    preprocess(
-        data_path=Path("data/raw/Wqt.csv"),
-        output_folder=Path("data/processed/"),
-        download=True
-    )       
+    typer.run(preprocess)
+    # preprocess(
+    #     data_path=Path("data/raw/Wqt.csv"),
+    #     output_folder=Path("data/processed/"),
+    #     download=False,
+    #     train_test_split_ratio=0.8,
+    #     train_val_split_ratio=0.9
+    # )       
     print("Data preprocessing completed.")
     
 
