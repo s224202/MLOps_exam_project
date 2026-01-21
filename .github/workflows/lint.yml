@@ -39,4 +39,4 @@ jobs:
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add .
         git diff --cached --quiet || git commit -m "Auto-format code with ruff"
-        git push
+        git push origin "${GITHUB_REF_NAME}"
