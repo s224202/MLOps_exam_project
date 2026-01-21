@@ -24,11 +24,8 @@ def test_preprocess(tmp_path=Path("data/processed")):
     assert not processed_data.empty
     for column in processed_data.columns:
         if column != "quality":
-            mean = processed_data[column].mean()
-            std = processed_data[column].std()
-            print(f"Column: {column}, Mean: {mean}, Std: {std}")
-            assert abs(mean) < 1e-6  # Mean should be approximately 0
-            assert abs(std - 1) < 1e-6  # Std should be approximately 1
+            assert abs(min(processed_data[column]) - 0.0) < 1e-5
+            assert abs(max(processed_data[column]) - 1.0) < 1e-5
 
 
 def test_getitem():
