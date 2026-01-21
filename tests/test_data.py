@@ -2,6 +2,7 @@ from mlops_exam_project.data import WineData
 from torch.utils.data import Dataset
 import pandas as pd
 from pathlib import Path
+import torch
 
 
 def test_wine_data():
@@ -34,6 +35,6 @@ def test_getitem():
     """Test the __getitem__ method of the WineData class."""
     dataset = WineData(Path("data/raw/WineQT.csv"), download=True)
     sample = dataset[0]
-    assert isinstance(sample, pd.Series)
+    assert isinstance(sample, torch.Tensor)
     assert len(sample) == len(dataset.data.columns)
     assert "quality" in sample.index
