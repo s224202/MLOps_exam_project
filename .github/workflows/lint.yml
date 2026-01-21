@@ -1,4 +1,7 @@
 name: "Run linting"
+permissions:
+  contents: write
+
 
 on:
   push:
