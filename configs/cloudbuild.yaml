@@ -1,0 +1,21 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Build container image'
+  args: [
+    'build',
+    '.',
+    '-t',
+    'europe-north2-docker.pkg.dev/$PROJECT_ID/mlops-group-31-container-registry/pytorch-2-7-cu128-ubuntu-2204-nvidia-570-v20260108',
+    '-f',
+    './dockerfiles/'
+  ]
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Push container image'
+  args: [
+    'push',
+    'europe-north2-docker.pkg.dev/$PROJECT_ID/mlops-group-31-container-registry/pytorch-2-7-cu128-ubuntu-2204-nvidia-570-v20260108'
+  ]
+options:
+  logging: CLOUD_LOGGING_ONLY
+  
+  

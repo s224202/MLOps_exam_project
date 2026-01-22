@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.0 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.3.0">
   <diagram name="Side-1" id="VrmyQuZyOtaVVeOIOs-d">
-    <mxGraphModel dx="1026" dy="644" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="1032" dy="615" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -192,9 +192,6 @@
         </mxCell>
         <mxCell id="fA-8PzDr9Rzszp4hBhJs-26" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=#00CC00;fontSize=14;" value="Mikkel" vertex="1">
           <mxGeometry height="30" width="60" x="320" y="635" as="geometry" />
-        </mxCell>
-        <mxCell id="YOUEXaWGPqtRaqTzByNl-3" parent="1" style="whiteSpace=wrap;html=1;aspect=fixed;" value="&lt;div&gt;Prioriteret rækkefølge:&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;1. Pytorch færdig - Mikael / Peter&lt;div&gt;2. Cloud Computing forberedelse - Peter&lt;br&gt;&lt;div&gt;3. Docker opdateret med Hydra - Mikael&lt;br&gt;4. Unittests - Adam&lt;br&gt;4b evt: Linting, Unit-test og pre-commit fejler i main - Adam (kan vente)&lt;/div&gt;&lt;div&gt;5. WandB logging - X&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="275" width="275" x="660" y="280" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
