@@ -360,6 +360,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 
 --- question 15 fill here ---
 
+![Overview of GCloud setup and Docker](figures/architecture.drawio.png)
 ### Question 16
 
 > **When running into bugs while trying to run your experiments, how did you perform debugging? Additionally, did you**
