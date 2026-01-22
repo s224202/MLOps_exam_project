@@ -1,0 +1,17 @@
+env:
+  paths:
+    data_root: data
+    output_root: outputs
+  runtime:
+    device: cpu
+    num_workers: 2
+model:
+  model:
+    name: baseline
+    params: {}
+training:
+  training:
+    seed: 42
+    epochs: 1
+    batch_size: 16
+    lr: 0.001
