@@ -9,8 +9,8 @@ from omegaconf import DictConfig
 from pathlib import Path
 from loguru import logger as llogger
 
-llogger.remove() # remove the default configuration
-llogger.add('logs/Mlops-31.log', rotation='10 MB', level='DEBUG') # log to file
+llogger.remove()  # remove the default configuration
+llogger.add("logs/Mlops-31.log", rotation="10 MB", level="DEBUG")  # log to file
 
 DEVICE = torch.device(
     "cuda"
@@ -20,6 +20,7 @@ DEVICE = torch.device(
     else "cpu"
 )
 llogger.debug("Using device: {}", DEVICE)
+
 
 @hydra.main(
     version_base=None, config_path="../../configs", config_name="config"
@@ -88,7 +89,6 @@ def train(cfg: DictConfig) -> None:
         epoch_total = 0
         llogger.info("Starting epoch {}", epoch)
 
-
         for i, (features, target) in enumerate(train_dataloader):
             features, target = features.to(DEVICE), target.to(DEVICE)
             optimizer.zero_grad()
@@ -139,9 +139,13 @@ def train(cfg: DictConfig) -> None:
             statistics["val_loss"].append(val_loss)
             statistics["val_accuracy"].append(val_accuracy)
 
-            llogger.info("Epoch {} validation loss: {}, validation accuracy: {}", epoch, val_loss, val_accuracy)
+            llogger.info(
+                "Epoch {} validation loss: {}, validation accuracy: {}",
+                epoch,
+                val_loss,
+                val_accuracy,
+            )
             print(
-      
                 f"Epoch {epoch}, Validation loss: {val_loss}, Validation accuracy: {val_accuracy}"
             )
 

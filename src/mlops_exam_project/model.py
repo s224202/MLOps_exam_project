@@ -2,7 +2,6 @@ import torch
 from torch import nn
 
 
-
 class WineQualityClassifier(nn.Module):
     """Feedforward neural network for wine quality classification."""
 
