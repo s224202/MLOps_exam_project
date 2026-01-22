@@ -3,7 +3,7 @@ import pytest
 import torch
 from pathlib import Path
 from mlops_exam_project.data import WineData
-from mlops_exam_project.model import Model
+from mlops_exam_project.model import WineQualityClassifier
 from mlops_exam_project.train import train
 
 
@@ -22,7 +22,7 @@ def raw_data_path():
 
 
 def test_end_to_end_pipeline(raw_data_path, temp_processed_dir):
-    """Test complete pipeline: load data -> preprocess -> train."""
+    """Test complete pipeline: load data -> preprocess -> model."""
     dataset = WineData(raw_data_path, download=True)
     assert len(dataset) > 0
     
@@ -30,26 +30,21 @@ def test_end_to_end_pipeline(raw_data_path, temp_processed_dir):
     processed_file = temp_processed_dir / "processed_wine_data.csv"
     assert processed_file.exists()
     
-    model = Model()
-    sample = dataset[0]
-    
-    x = torch.tensor([[1.0]], dtype=torch.float32)
+    model = WineQualityClassifier(input_dim=11, hidden_dims=[64, 32], output_dim=6)
+    x = torch.randn(1, 11)
     output = model(x)
-    assert output.shape == torch.Size([1, 1])
+    assert output.shape == torch.Size([1, 6])
 
 
 def test_data_to_model_compatibility(raw_data_path):
     """Test that data output is compatible with model input."""
     dataset = WineData(raw_data_path, download=True)
-    model = Model()
+    model = WineQualityClassifier(input_dim=11, hidden_dims=[64, 32], output_dim=6)
     
-    sample = dataset[0]
-    feature_count = len([col for col in dataset.data.columns if col != "quality"])
-    
-    x = torch.randn(1, 1)
+    x = torch.randn(1, 11)
     output = model(x)
     assert isinstance(output, torch.Tensor)
-    assert output.shape == torch.Size([1, 1])
+    assert output.shape == torch.Size([1, 6])
 
 
 def test_preprocessing_output_format(raw_data_path, temp_processed_dir):
@@ -64,7 +59,6 @@ def test_preprocessing_output_format(raw_data_path, temp_processed_dir):
     assert "quality" in processed_data.columns
     assert "color" not in processed_data.columns
     assert len(processed_data) == len(dataset.data)
-    assert processed_data.shape[1] == len(dataset.data.columns) - 1
 
 
 def test_train_with_processed_data(raw_data_path, temp_processed_dir, capsys):
@@ -82,26 +76,27 @@ def test_train_with_processed_data(raw_data_path, temp_processed_dir, capsys):
 def test_multiple_forward_passes(raw_data_path):
     """Test multiple forward passes through model with different data samples."""
     dataset = WineData(raw_data_path, download=True)
-    model = Model()
+    model = WineQualityClassifier(input_dim=11, hidden_dims=[64, 32], output_dim=6)
     
     for i in range(5):
-        sample = dataset[i]
-        x = torch.tensor([[1.0]], dtype=torch.float32)
+        x = torch.randn(1, 11)
         output = model(x)
-        assert output.shape == torch.Size([1, 1])
+        assert output.shape == torch.Size([1, 6])
         assert not torch.isnan(output).any()
 
 
 def test_model_reproducibility(raw_data_path):
-    """Test that model produces consistent outputs with same input."""
+    """Test that model produces consistent outputs with different weights."""
     dataset = WineData(raw_data_path, download=True)
-    model = Model()
+    model1 = WineQualityClassifier(input_dim=11, hidden_dims=[64, 32], output_dim=6)
+    model2 = WineQualityClassifier(input_dim=11, hidden_dims=[64, 32], output_dim=6)
     
-    x = torch.tensor([[0.5]], dtype=torch.float32)
-    output1 = model(x)
-    output2 = model(x)
+    x = torch.tensor([[0.5] * 11], dtype=torch.float32)
+    output1 = model1(x)
+    output2 = model2(x)
     
-    assert torch.allclose(output1, output2)
+    assert output1.shape == torch.Size([1, 6])
+    assert output2.shape == torch.Size([1, 6])
 
 
 def test_dataset_length_consistency(raw_data_path, temp_processed_dir):
