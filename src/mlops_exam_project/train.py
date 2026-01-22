@@ -179,9 +179,12 @@ def train(cfg: DictConfig) -> None:
         project_root / cfg.figure_path / cfg.figure_training_plot, bbox_inches="tight"
     )  # dpi=150,
 
-    print(
-        f"Training plots saved to {project_root / cfg.figure_path / cfg.figure_training_plot}"
-    )
+    # fig.savefig(project_root / cfg.figure_path / cfg.figure_training_plot, bbox_inches='tight') # dpi=150,
+
+    # changes to save in reports/figures instead of figures/; needed for the docker + hydra setup
+    fig_dir = Path(cfg.figure_path)
+    fig_dir.mkdir(parents=True, exist_ok=True)
+    fig.savefig(fig_dir / cfg.figure_training_plot, bbox_inches="tight")
 
 
 if __name__ == "__main__":
