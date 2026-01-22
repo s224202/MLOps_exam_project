@@ -7,6 +7,10 @@ from data import WineData
 from model import WineQualityClassifier as MyAwesomeModel
 from omegaconf import DictConfig
 from pathlib import Path
+from loguru import logger as llogger
+
+llogger.remove() # remove the default configuration
+llogger.add('logs/Mlops-31.log', rotation='10 MB', level='DEBUG') # log to file
 
 DEVICE = torch.device(
     "cuda"
@@ -15,7 +19,7 @@ DEVICE = torch.device(
     if torch.backends.mps.is_available()
     else "cpu"
 )
-
+llogger.debug("Using device: {}", DEVICE)
 
 @hydra.main(
     version_base=None, config_path="../../configs", config_name="config"
@@ -30,8 +34,12 @@ def train(cfg: DictConfig) -> None:
     ).parent.parent.parent  # Getting the project root directory
     # data_path = Path(cfg.data_path)
     data_path = project_root / cfg.data_path
+    llogger.debug("Data path: {}", data_path)
     train_data_name = cfg.train_data_filename
+    llogger.debug("Train data name: {}", train_data_name)
     val_data_name = cfg.val_data_filename
+    llogger.debug("Validation data name: {}", val_data_name)
+
     # test_data_name = cfg.test_data_filename
     # model_path = Path(cfg.model_path)
     model_path = project_root / cfg.model_path
@@ -42,6 +50,7 @@ def train(cfg: DictConfig) -> None:
     print(f"Project root: {project_root}")
     print(f"Using device: {DEVICE}")
     print(f"Training configuration: {cfg.training}")
+    llogger.debug("Training configuration: {}", cfg.training)
     print(f"Training data path: {data_path / train_data_name}")
     print(f"Validation data path: {data_path / val_data_name}")
     print(f"Model will be saved to: {model_path / model_name}")
@@ -77,6 +86,8 @@ def train(cfg: DictConfig) -> None:
         epoch_loss = 0.0
         epoch_correct = 0
         epoch_total = 0
+        llogger.info("Starting epoch {}", epoch)
+
 
         for i, (features, target) in enumerate(train_dataloader):
             features, target = features.to(DEVICE), target.to(DEVICE)
@@ -101,11 +112,14 @@ def train(cfg: DictConfig) -> None:
 
         # Calculate epoch averages
         avg_loss = epoch_loss / len(train_dataloader)
+        llogger.info("Epoch {} average loss: {}", epoch, avg_loss)
         avg_accuracy = epoch_correct / epoch_total
+        llogger.info("Epoch {} average accuracy: {}", epoch, avg_accuracy)
         statistics["epoch_loss"].append(avg_loss)
         statistics["epoch_accuracy"].append(avg_accuracy)
 
         # do validation every epoch
+        llogger.info("Starting validation for epoch {}", epoch)
         model.eval()
         with torch.no_grad():
             val_accuracy = 0
@@ -125,14 +139,17 @@ def train(cfg: DictConfig) -> None:
             statistics["val_loss"].append(val_loss)
             statistics["val_accuracy"].append(val_accuracy)
 
+            llogger.info("Epoch {} validation loss: {}, validation accuracy: {}", epoch, val_loss, val_accuracy)
             print(
+      
                 f"Epoch {epoch}, Validation loss: {val_loss}, Validation accuracy: {val_accuracy}"
             )
 
     print("Training complete")
+    llogger.info("Training complete")
     torch.save(model.state_dict(), model_path / model_name)
     print(f"Model saved to {model_path / model_name}")
-
+    llogger.info("Model saved to {}", model_path / model_name)
     # Plot training statistics
     fig, axs = plt.subplots(1, 2, figsize=(15, 5))
     # axs[0].plot(statistics["train_loss"],  marker='o', color='blue', markersize=2, label='Train Loss')
