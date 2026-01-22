@@ -8,6 +8,7 @@ import hydra
 from data import WineData
 from model import WineQualityClassifier
 
+
 DEVICE = torch.device(
     "cuda"
     if torch.cuda.is_available()

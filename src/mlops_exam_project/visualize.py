@@ -10,6 +10,7 @@ from omegaconf import DictConfig
 from data import WineData
 from model import WineQualityClassifier as MyAwesomeModel
 
+
 DEVICE = torch.device(
     "cuda"
     if torch.cuda.is_available()
