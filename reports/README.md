@@ -207,7 +207,7 @@ Notebooks folder not used. No folders deleted.
 >
 > Answer:
 
-We have used Ruff for linting and formatting. Linting finds unused variables, inconsistencies, logical errors, syntax etc. Formatting takes 
+We have used Ruff for linting and formatting. Linting finds unused variables, inconsistencies, logical errors, syntax etc. Formatting takes
 care of the constistant visual look of the code.
 In larger projects with many developers, the ability to quickly read each others code is enhanced by consistent formatting. And linting errors are highly correlated
 with actual bugs, although linting doesn't guarantee you reach your end goal.
@@ -260,7 +260,7 @@ with actual bugs, although linting doesn't guarantee you reach your end goal.
 > Answer:
 
 We started by defining feature branches that could be delegated to the 4 of us. We used Github as the central repository with a main branch, not directly accessible.
-Each member used Git, and used git push to upload their local branch to the remote branch. On Github, a pull request is then requested to pull the remote branch into 
+Each member used Git, and used git push to upload their local branch to the remote branch. On Github, a pull request is then requested to pull the remote branch into
 the main branch. We set it up so that someone else than the pull requester had to approve the merge into main. This way, two x two eyes are always on the code, and
 the main branch is kept as well-working as possible.
 

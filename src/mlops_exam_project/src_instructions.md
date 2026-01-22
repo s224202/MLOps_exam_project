@@ -1,8 +1,8 @@
 # Pytorch instructions (Hydra)
 
- 
 
-## Running data.py  
+
+## Running data.py
 
 
 Generate processed data with download (in default directories)
@@ -53,7 +53,7 @@ uv run ./src/mlops_exam_project/data.py \
 From the root of the project, run:
 
 ```bash
-uv run src/mlops_exam_project/train.py 
+uv run src/mlops_exam_project/train.py
 ```
 
 To override Hydra config values from the command line, you need to use Hydra's override syntax with ++ or standard key=value format. Here's how to do it:
@@ -90,7 +90,7 @@ uv run python src/mlops_exam_project/train.py training=default
 ## Running evaluate.py (with Hydra)
 
 
-Command line examples for running the evaluation script with Hydra configuration. 
+Command line examples for running the evaluation script with Hydra configuration.
 
 
 ### Basic usage
