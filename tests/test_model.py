@@ -43,4 +43,3 @@ def test_model_state_dict():
     state = model.state_dict()
     assert len(state) > 0
     assert any("network" in key for key in state.keys())
-

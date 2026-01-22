@@ -1,6 +1,5 @@
 from mlops_exam_project.train import train
 from pathlib import Path
-import pytest
 
 
 def test_train():
@@ -26,4 +25,3 @@ def test_train_function_logic(capsys):
     output_lines = captured.out.strip().split("\n")
     assert len(output_lines) >= 3
     assert any("Dataset size:" in line for line in output_lines)
-
