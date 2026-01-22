@@ -134,7 +134,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
-s951108, s224202, sXXXX, sXXXX
+s951108, s224202, s183737, s260014
 
 ### Question 3
 > **Did you end up using any open-source frameworks/packages not covered in the course during your project? If so**
@@ -207,10 +207,8 @@ Notebooks folder not used. No folders deleted.
 >
 > Answer:
 
-We have used Ruff for linting and formatting. Linting finds unused variables, inconsistencies, logical errors, syntax etc. Formatting takes 
-care of the constistant visual look of the code.
-In larger projects with many developers, the ability to quickly read each others code is enhanced by consistent formatting. And linting errors are highly correlated
-with actual bugs, although linting doesn't guarantee you reach your end goal.
+We have used Ruff for linting and formatting. Linting finds unused variables, inconsistencies, logical errors, syntax etc. Formatting takes care of the constistant visual look of the code.
+In larger projects with many developers, the ability to quickly read each others code is enhanced by consistent formatting. And linting errors are highly correlated with actual bugs, although linting doesn't guarantee you reach your end goal.
 
 ## Version control
 
@@ -294,7 +292,7 @@ the main branch is kept as well-working as possible.
 >
 > Answer:
 
---- question 11 fill here ---
+We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. All was done as triggered workflow on pushes and pull requests by 3 yaml files.
 
 ## Running code and tracking experiments
 
