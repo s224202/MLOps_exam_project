@@ -14,7 +14,7 @@ WORKDIR /
 # --------------------------------------
 COPY ../uv.lock uv.lock
 COPY ../pyproject.toml pyproject.toml
-COPY ../LICENSE LICENSE  
+COPY ../LICENSE LICENSE
 
 ENV UV_LINK_MODE=copy
 RUN --mount=type=cache,target=/root/.cache/uv \
@@ -29,16 +29,16 @@ COPY ../README.md README.md
 #COPY ../models/ models/
 # creates a directory for storing data file and  creates a directory for storing trained model files
 # We mount trained weights and evaluation data at runtime
-RUN mkdir -p /models /data 
+RUN mkdir -p /models /data
 
 
 RUN mkdir -p configs
 # better to make  configs/  mountable.
 # COPY ../models/ models/
 # creates a directory for storing trained model files (avoiding copying existing model files)
-RUN mkdir -p models 
+RUN mkdir -p models
 #COPY ../reports/ reports/
-RUN mkdir -p reports 
+RUN mkdir -p reports
 
 
 # COPY ../reports/ reports/
