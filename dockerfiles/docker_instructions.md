@@ -129,12 +129,12 @@ docker run --rm --name evaluate \
     -v $(pwd)/data:/data \
     evaluate:latest \
     /models/model.pth
-``` 
+```
 
 
 # Docker instructions (with Hydra)
 
-Here we explain how to use docker image built using 
+Here we explain how to use docker image built using
 ```bash
 train_hydra.dockerfile
 ```
@@ -160,7 +160,7 @@ docker build  --no-cache -f dockerfiles/train_hydra.dockerfile . -t train_hydra:
 ```
 
 
-## Run the training container 
+## Run the training container
 
 
 ### with default arguments
@@ -169,7 +169,7 @@ docker run --name {container_name} name:tag
 ```
 Example:
 ```bash
-docker run --name experiment_hydra1 train_hydra:latest 
+docker run --name experiment_hydra1 train_hydra:latest
 ```
 
 
@@ -189,7 +189,7 @@ docker run --rm \
 -v $(pwd)/models:/models/ train:latest -->
 
 <!-- ```bash
-docker run  -v $(pwd)/models:/models/  --name experiment_hydra1 train_hydra:latest 
+docker run  -v $(pwd)/models:/models/  --name experiment_hydra1 train_hydra:latest
 ``` -->
 
 Extract figures:
@@ -231,16 +231,16 @@ Hydra overrides work exactly like CLI flags.
 docker run --rm --name experiment_hydra1 \
   train_hydra:latest \
   training.epochs=5
- ``` 
+ ```
 
 ##  Mounting configs from the host (recommended)
 
 
-Here we explain how to use docker image built using 
+Here we explain how to use docker image built using
 ```bash
 train_hydra_config_mounting.dockerfile
 ```
-Example 
+Example
 ```bash
 docker build -f dockerfiles/train_hydra_config_mounting.dockerfile . -t train_hydra:latest
 ```
@@ -297,4 +297,4 @@ docker run --rm --name evaluate \
   evaluate:latest \
   model_path=/models \
   model_name=model.pth
-``` 
+```
