@@ -8,10 +8,10 @@ hydra:
   run:
     dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
   job:
-    chdir: true
+    chdir: false # true
 
 
- 
+
 # Data and model paths and filenames
 data_path: ./data/processed  # Path to processed data directory
 train_data_filename: train_data.csv  # Data filename
