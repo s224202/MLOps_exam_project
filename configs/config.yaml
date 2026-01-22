@@ -11,7 +11,7 @@ hydra:
     chdir: false #true
 
 
- 
+
 # Data and model paths and filenames
 data_path: ./data/processed  # Path to processed data directory
 train_data_filename: train_data.csv  # Data filename
