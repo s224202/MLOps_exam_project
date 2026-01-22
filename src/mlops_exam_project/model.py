@@ -49,6 +49,10 @@ class WineQualityClassifier(nn.Module):
         return self.network(x)
 
 
+# Alias for compatibility with tests expecting Model class
+Model = WineQualityClassifier
+
+
 if __name__ == "__main__":
     # Test the model
     model = WineQualityClassifier(
