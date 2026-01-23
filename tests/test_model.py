@@ -1,12 +1,45 @@
-from mlops_exam_project.model import WineQualityClassifier
 import torch
+from mlops_exam_project.model import WineQualityClassifier
 
 
-def test_wine_quality_classifier():
-    """Test that the model can handle a forward pass with dummy data."""
-    model = WineQualityClassifier(
-        input_dim=11, hidden_dims=[64, 32, 16], output_dim=10, dropout_rate=0.3
-    )
-    x = torch.randn(8, 11)  # Batch of 8 samples
+def test_model_initialization():
+    """Test WineQualityClassifier initialization."""
+    model = WineQualityClassifier()
+    assert isinstance(model, torch.nn.Module)
+    assert hasattr(model, "network")
+    assert isinstance(model.network, torch.nn.Sequential)
+
+
+def test_model_forward_pass():
+    """Test WineQualityClassifier forward pass."""
+    model = WineQualityClassifier(input_dim=11, hidden_dims=[64, 32], output_dim=6)
+    x = torch.randn(1, 11)
     output = model(x)
-    assert output.shape == (8, 10)
+    assert isinstance(output, torch.Tensor)
+    assert output.shape == torch.Size([1, 6])
+
+
+def test_model_forward_batch():
+    """Test WineQualityClassifier forward pass with batch."""
+    model = WineQualityClassifier(input_dim=11, hidden_dims=[64, 32], output_dim=6)
+    x = torch.randn(10, 11)
+    output = model(x)
+    assert isinstance(output, torch.Tensor)
+    assert output.shape == torch.Size([10, 6])
+
+
+def test_model_parameters():
+    """Test that WineQualityClassifier has trainable parameters."""
+    model = WineQualityClassifier()
+    params = list(model.parameters())
+    assert len(params) > 0
+    total_params = sum(p.numel() for p in params)
+    assert total_params > 0
+
+
+def test_model_state_dict():
+    """Test WineQualityClassifier state dictionary."""
+    model = WineQualityClassifier()
+    state = model.state_dict()
+    assert len(state) > 0
+    assert any("network" in key for key in state.keys())

@@ -1,5 +1,7 @@
 docs/site/
 
+#draw.io files
+*.bkp
 # wandb files
 wandb/
 
