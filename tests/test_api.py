@@ -1,9 +1,6 @@
 from mlops_exam_project.train import train
 from pathlib import Path
-<<<<<<< HEAD
-=======
 import pytest
->>>>>>> 4b2eb16 (Code Coverage udvidet, integration test implementeret)
 
 
 def test_train():
@@ -29,7 +26,3 @@ def test_train_function_logic(capsys):
     output_lines = captured.out.strip().split("\n")
     assert len(output_lines) >= 3
     assert any("Dataset size:" in line for line in output_lines)
-<<<<<<< HEAD
-=======
-
->>>>>>> 4b2eb16 (Code Coverage udvidet, integration test implementeret)
