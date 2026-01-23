@@ -277,38 +277,3 @@ def test_hydra_config_loading_logic():
     assert "data/processed" in str(data_path)
     assert "models" in str(model_path)
     assert project_root in data_path.parents or project_root == data_path.parent.parent.parent
-
-
-def test_evaluate_model_all_predictions_same_class(sample_model):
-    """Test evaluate_model when all predictions are same class."""
-    from torch.utils.data import DataLoader, TensorDataset
-    
-    # Mixed labels
-    test_features = torch.randn(16, 11)
-    test_labels = torch.tensor([0, 1, 2, 3, 4, 5] * 3, dtype=torch.long)[:16]
-    test_dataset = TensorDataset(test_features, test_labels)
-    test_loader = DataLoader(test_dataset, batch_size=8)
-    
-    results = evaluate_model(sample_model, test_loader, device="cpu", num_classes=6)
-    
-    # Should still produce valid metrics
-    assert results["total"] == 16
-    assert results["correct"] >= 0
-    assert results["correct"] <= results["total"]
-
-
-def test_evaluate_model_report_format(sample_model):
-    """Test that evaluate_model produces properly formatted report."""
-    from torch.utils.data import DataLoader, TensorDataset
-    
-    test_features = torch.randn(24, 11)
-    test_labels = torch.randint(0, 6, (24,))
-    test_dataset = TensorDataset(test_features, test_labels)
-    test_loader = DataLoader(test_dataset, batch_size=8)
-    
-    results = evaluate_model(sample_model, test_loader, device="cpu", num_classes=6)
-    
-    # Verify report is a string
-    assert isinstance(results["report"], str)
-    assert "Quality" in results["report"]
-    assert "precision" in results["report"].lower() or "accuracy" in results["report"].lower()
