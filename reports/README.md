@@ -1,56 +1,74 @@
 # Exam template for 02476 Machine Learning Operations
 
+
 This is the report template for the exam. Please only remove the text formatted as with three dashes in front and behind
 like:
 
+
 ```--- question 1 fill here ---```
+
 
 Where you instead should add your answers. Any other changes may have unwanted consequences when your report is
 auto-generated at the end of the course. For questions where you are asked to include images, start by adding the image
 to the `figures` subfolder (please only use `.png`, `.jpg` or `.jpeg`) and then add the following code in your answer:
 
+
 `![my_image](figures/<image>.<extension>)`
+
 
 In addition to this markdown file, we also provide the `report.py` script that provides two utility functions:
 
+
 Running:
+
 
 ```bash
 python report.py html
 ```
 
+
 Will generate a `.html` page of your report. After the deadline for answering this template, we will auto-scrape
 everything in this `reports` folder and then use this utility to generate a `.html` page that will be your serve
 as your final hand-in.
 
+
 Running
+
 
 ```bash
 python report.py check
 ```
 
+
 Will check your answers in this template against the constraints listed for each question e.g. is your answer too
 short, too long, or have you included an image when asked. For both functions to work you mustn't rename anything.
 The script has two dependencies that can be installed with
+
 
 ```bash
 pip install typer markdown
 ```
 
+
 or
+
 
 ```bash
 uv add typer markdown
 ```
 
+
 ## Overall project checklist
+
 
 The checklist is *exhaustive* which means that it includes everything that you could do on the project included in the
 curriculum in this course. Therefore, we do not expect at all that you have checked all boxes at the end of the project.
 The parenthesis at the end indicates what module the bullet point is related to. Please be honest in your answers, we
 will check the repositories and the code to verify your answers.
 
+
 ### Week 1
+
 
 * [X] Create a git repository (M5)
 * [X] Make sure that all team members have write access to the GitHub repository (M5)
@@ -60,7 +78,7 @@ will check the repositories and the code to verify your answers.
 * [X] Add a model to `model.py` and a training procedure to `train.py` and get that running (M6)
 * [X] Remember to either fill out the `requirements.txt`/`requirements_dev.txt` files or keeping your
     `pyproject.toml`/`uv.lock` up-to-date with whatever dependencies that you are using (M2+M6)
-* [ ] Remember to comply with good coding practices (`pep8`) while doing the project (M7)
+* [X] Remember to comply with good coding practices (`pep8`) while doing the project (M7)
 * [X] Do a bit of code typing and remember to document essential parts of your code (M7)
 * [-] Setup version control for your data or part of your data (M8)
 * [X] Add command line interfaces and project commands to your code where it makes sense (M9)
@@ -74,7 +92,9 @@ will check the repositories and the code to verify your answers.
 * [X] Consider running a hyperparameter optimization sweep (M14)
 * [-] Use PyTorch-lightning (if applicable) to reduce the amount of boilerplate in your code (M15)
 
+
 ### Week 2
+
 
 * [X] Write unit tests related to the data part of your code (M16)
 * [X] Write unit tests related to model construction and or model training (M16)
@@ -87,15 +107,17 @@ will check the repositories and the code to verify your answers.
 * [-] Add a continues workflow that triggers when changes to the model registry is made (M19)
 * [-] Create a data storage in GCP Bucket for your data and link this with your data version control setup (M21)
 * [ ] Create a trigger workflow for automatically building your docker images (M21)
-* [ ] Get your model training in GCP using either the Engine or Vertex AI (M21)
+* [-] Get your model training in GCP using either the Engine or Vertex AI (M21)
 * [X] Create a FastAPI application that can do inference using your model (M22)
 * [ ] Deploy your model in GCP using either Functions or Run as the backend (M23)
-* [ ] Write API tests for your application and setup continues integration for these (M24)
-* [ ] Load test your application (M24)
+* [X] Write API tests for your application and setup continues integration for these (M24)
+* [X] Load test your application (M24)
 * [-] Create a more specialized ML-deployment API using either ONNX or BentoML, or both (M25)
 * [-] Create a frontend for your API (M26)
 
+
 ### Week 3
+
 
 * [-] Check how robust your model is towards data drifting (M27)
 * [-] Setup collection of input-output data from your deployed application (M27)
@@ -107,7 +129,9 @@ will check the repositories and the code to verify your answers.
 * [-] If applicable, optimize the performance of your training pipeline by using distributed training (M30)
 * [ ] Play around with quantization, compilation and pruning for you trained models to increase inference speed (M31)
 
+
 ### Extra
+
 
 * [ ] Write some documentation for your application (M32)
 * [ ] Publish the documentation to GitHub Pages (M32)
@@ -116,14 +140,18 @@ will check the repositories and the code to verify your answers.
 * [ ] Make sure all group members have an understanding about all parts of the project
 * [ ] Uploaded all your code to GitHub
 
+
 ## Group information
+
 
 ### Question 1
 > **Enter the group number you signed up on <learn.inside.dtu.dk>**
 >
 > Answer:
 
+
 031
+
 
 ### Question 2
 > **Enter the study number for each member in the group**
@@ -134,7 +162,9 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
+
 s951108, s224202, s183737, s260014
+
 
 ### Question 3
 > **Did you end up using any open-source frameworks/packages not covered in the course during your project? If so**
@@ -148,14 +178,19 @@ s951108, s224202, s183737, s260014
 >
 > Answer:
 
+
 We did not use any major open-source frameworks beyond those covered in the course. All dependencies (PyTorch, FastAPI, Hydra, etc.) were frameworks taught in the course curriculum.
 
+
 ## Coding environment
+
 
 > In the following section we are interested in learning more about you local development environment. This includes
 > how you managed dependencies, the structure of your code and how you managed code quality.
 
+
 ### Question 4
+
 
 > **Explain how you managed dependencies in your project? Explain the process a new team member would have to go**
 > **through to get an exact copy of your environment.**
@@ -168,9 +203,12 @@ We did not use any major open-source frameworks beyond those covered in the cour
 >
 > Answer:
 
-We used the uv package manager to manage dependencies for the project. This meant that the list of dependencies was automatically generated as we used 'uv add' to add new dependencies to the project. In order to get a complete copy of our development environment, a user would first have to install uv, then clone our repository. With the working directory set as the top of the project, the user can simply run 'uv sync --all-groups' in order to download and install the full list of dependencies. If the user was not interested in certain packages relating to the development process, such as pre-commit and ruff, they could simply run 'uv sync' to get the packages neccesary for running the code.
+
+We used the uv package manager to manage dependencies for the project. This meant that the list of dependencies was automatically generated as we used 'uv add' to add new dependencies to the project. In order to get a complete copy of our development environment, a user would first have to install uv, then clone our repository. With the working directory set as the top of the project, the user can simply run 'uv sync --all-groups' in order to download and install the full list of dependencies. If the user was not interested in certain packages relating to the development process, such as pre-commit and ruff, they could simply run 'uv sync' to get the packages necessary for running the code.
+
 
 ### Question 5
+
 
 > **We expect that you initialized your project using the cookiecutter template. Explain the overall structure of your**
 > **code. What did you fill out? Did you deviate from the template in some way?**
@@ -184,10 +222,13 @@ We used the uv package manager to manage dependencies for the project. This mean
 >
 > Answer:
 
+
 We have filled out the configs, data, dockerfiles, models, outputs, reports, src, tests.
 Notebooks folder not used. No folders deleted.
 
+
 ### Question 6
+
 
 > **Did you implement any rules for code quality and format? What about typing and documentation? Additionally,**
 > **explain with your own words why these concepts matters in larger projects.**
@@ -200,17 +241,22 @@ Notebooks folder not used. No folders deleted.
 >
 > Answer:
 
+
 We have used Ruff for linting and formatting. Linting finds unused variables, inconsistencies, logical errors, syntax etc. Formatting takes
-care of the constistant visual look of the code.
+care of the consistent visual look of the code.
 In larger projects with many developers, the ability to quickly read each others code is enhanced by consistent formatting. And linting errors are highly correlated
 with actual bugs, although linting doesn't guarantee you reach your end goal.
 
+
 ## Version control
+
 
 > In the following section we are interested in how version control was used in your project during development to
 > corporate and increase the quality of your code.
 
+
 ### Question 7
+
 
 > **How many tests did you implement and what are they testing in your code?**
 >
@@ -222,9 +268,12 @@ with actual bugs, although linting doesn't guarantee you reach your end goal.
 >
 > Answer:
 
+
 In total we have implemented 25 tests. We are testing data loading, preprocessing, and split functionality in test_data.py (10 tests). We test model construction, forward pass, parameter counting, and state dict functionality in test_model.py (5 tests). We have integration tests covering the full pipeline from data loading through training in test_integration.py (7 tests). Finally, we have API smoke tests in test_api.py (3 tests) verifying the FastAPI endpoints work correctly.
 
+
 ### Question 8
+
 
 > **What is the total code coverage (in percentage) of your code? If your code had a code coverage of 100% (or close**
 > **to), would you still trust it to be error free? Explain you reasoning.**
@@ -237,9 +286,12 @@ In total we have implemented 25 tests. We are testing data loading, preprocessin
 >
 > Answer:
 
+
 The total code coverage of our code is 93%, which includes all our source code in the src/mlops_exam_project directory. We are not at 100% coverage - the uncovered lines are primarily the `if __name__ == "__main__"` guards in our modules, which we intentionally exclude as they are entry points rather than core logic. Even with 100% code coverage, we would not trust the code to be error-free. Code coverage measures which lines are executed during tests, but it doesn't guarantee that all edge cases are tested, that the assertions are correct, or that the tests themselves are well-designed. High coverage is a good indicator of test thoroughness, but bugs can still exist in the logic, error handling, or integration between components.
 
+
 ### Question 9
+
 
 > **Did you workflow include using branches and pull requests? If yes, explain how. If not, explain how branches and**
 > **pull request can help improve version control.**
@@ -252,12 +304,15 @@ The total code coverage of our code is 93%, which includes all our source code i
 >
 > Answer:
 
+
 We started by defining feature branches that could be delegated to the 4 of us. We used Github as the central repository with a main branch, not directly accessible.
 Each member used Git, and used git push to upload their local branch to the remote branch. On Github, a pull request is then requested to pull the remote branch into
 the main branch. We set it up so that someone else than the pull requester had to approve the merge into main. This way, two x two eyes are always on the code, and
 the main branch is kept as well-working as possible.
 
+
 ### Question 10
+
 
 > **Did you use DVC for managing data in your project? If yes, then how did it improve your project to have version**
 > **control of your data. If no, explain a case where it would be beneficial to have version control of your data.**
@@ -270,9 +325,12 @@ the main branch is kept as well-working as possible.
 >
 > Answer:
 
+
 We did not use DVC for managing data in this project. However, DVC would have been beneficial for version controlling our wine quality dataset, especially if we had multiple versions of preprocessed data or if team members were experimenting with different data cleaning approaches. DVC would allow us to track changes to the dataset over time, share large data files efficiently through cloud storage (without committing them to Git), and ensure reproducibility by linking specific data versions to specific model training runs. This would be particularly useful if we were continuously updating our dataset with new wine samples or experimenting with different feature engineering strategies.
 
+
 ### Question 11
+
 
 > **Discuss you continuous integration setup. What kind of continuous integration are you running (unittesting,**
 > **linting, etc.)? Do you test multiple operating systems, Python  version etc. Do you make use of caching? Feel free**
@@ -287,14 +345,19 @@ We did not use DVC for managing data in this project. However, DVC would have be
 >
 > Answer:
 
+
 We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. All was done as triggered workflow on pushes and pull requests by 3 yaml files.
 
+
 ## Running code and tracking experiments
+
 
 > In the following section we are interested in learning more about the experimental setup for running your code and
 > especially the reproducibility of your experiments.
 
+
 ### Question 12
+
 
 > **How did you configure experiments? Did you make use of config files? Explain with coding examples of how you would**
 > **run a experiment.**
@@ -306,9 +369,12 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
+
 We used Hydra for configuration management with YAML config files stored in the configs/ directory. The main config file (config.yaml) includes data paths, model paths, and file names, while separate configs exist for model architecture (model/default.yaml) and training parameters (training/default.yaml). To run an experiment with default settings: `uv run python src/mlops_exam_project/train.py`. To override specific parameters: `uv run python src/mlops_exam_project/train.py training.learning_rate=0.001 training.batch_size=64`. Hydra automatically creates timestamped output directories for each run, making it easy to track different experiments.
 
+
 ### Question 13
+
 
 > **Reproducibility of experiments are important. Related to the last question, how did you secure that no information**
 > **is lost when running experiments and that your experiments are reproducible?**
@@ -321,9 +387,17 @@ We used Hydra for configuration management with YAML config files stored in the 
 >
 > Answer:
 
+
 We used Hydra configuration files to ensure reproducibility. Whenever an experiment is run, Hydra automatically saves the complete configuration (including all overrides) to a .hydra subdirectory in the output folder with a timestamp. This preserves all hyperparameters, data paths, and model settings used for that specific run. We also use logging (loguru) to record training progress, data paths, and model checkpoints. To reproduce an experiment, one would navigate to the specific output folder, inspect the saved config.yaml file in the .hydra directory, and re-run the training script with those exact parameters. The combination of version-controlled code (via Git), saved configurations (via Hydra), and comprehensive logging ensures that experiments can be replicated exactly.
 
+
+
+
+We also logged our experiments, including models and hyperparameters,  using W&B, as briefly discussed in the answer to the next question.
+
+
 ### Question 14
+
 
 > **Upload 1 to 3 screenshots that show the experiments that you have done in W&B (or another experiment tracking**
 > **service of your choice). This may include loss graphs, logged images, hyperparameter sweeps etc. You can take**
@@ -338,9 +412,28 @@ We used Hydra configuration files to ensure reproducibility. Whenever an experim
 >
 > Answer:
 
---- question 14 fill here ---
+
+
+
+As seen in the image ![Experiment tracking](figures/WB_experiment.png), we tracked both the training  and validation losses and accuracies for each experiment, which both inform us about the performance of the model (with a given set of hyperparameter, which in turn are logged as metadata in the artifacts registry).
+
+
+For hyperparameter optimization we utilized the W&B sweeping agent. As seen in the image ![Sweeping](figures/WB_sweeping.png), we can from the parallel coordinate chart plot  assess  and compare the performance of the different   models with a given set of hyperparameters.
+
+
+We also save the models to the artifacts registry ![Artifacts registry](figures/WB_artifacts.png). The metadata for each model, including the  hyperparameters, were also saved to the artifacts registry ![Artifacts metadata](figures/WB_artifacts_metadata.png).  This is  important since the different models have different  hyperparameters (e.g., the number of hidden layers and the depth of the hidden layer, as indicated by  hidden_dims).
+
+
+Finally, we mention that the models were saved in the model registry  ![Model registry](figures/WB_model_registry.png).
+
+
+ The  W&B files  are located in the src/mlops_exam_wandb directory of our repository.
+
+
+
 
 ### Question 15
+
 
 > **Docker is an important tool for creating containerized applications. Explain how you used docker in your**
 > **experiments/project? Include how you would run your docker images and include a link to one of your docker files.**
@@ -353,9 +446,15 @@ We used Hydra configuration files to ensure reproducibility. Whenever an experim
 >
 > Answer:
 
-For our project we developed multiple Docker images for different purposes. We have training dockerfiles (train.dockerfile, train_hydra.dockerfile, train_hydra_config_mounting.dockerfile) and evaluation dockerfiles (evaluate.dockerfile, evaluate_hydra.dockerfile). The Hydra versions integrate with our configuration system, while the config mounting variant allows external config files to be mounted at runtime. To build a training image: `docker build -f dockerfiles/train_hydra.dockerfile -t train:latest .`. To run it: `docker run train:latest`. The dockerfiles are located in the dockerfiles/ directory of our repository. Link to example dockerfile: https://github.com/s224202/MLOps_exam_project/blob/main/dockerfiles/train_hydra.dockerfile
+
+For our project we developed multiple Docker images for different purposes. We have training dockerfiles (train_hydra.dockerfile, train_hydra_config_mounting.dockerfile, train.dockerfile) and evaluation dockerfiles (evaluate_hydra.dockerfile, evaluate.dockerfile). The Hydra versions integrate with our configuration system, while the config mounting variant allows external config files to be mounted at runtime. (It is important to note that train.dockerfile and evaluate.dockerfile are compatible with the files src/mlops_exam_project since Hydra is used, and hence we use the Hydra compatible docker files train_hydra.dockerfile, train_hydra_config_mounting.dockerfile and evaluate_hydra.dockerfile.)
+
+
+To build a training image: `docker build -f dockerfiles/train_hydra.dockerfile -t train:latest .`. To run it: `docker run train:latest`. The dockerfiles are located in the dockerfiles/ directory of our repository. Link to example dockerfile: https://github.com/s224202/MLOps_exam_project/blob/main/dockerfiles/train_hydra.dockerfile
+
 
 ### Question 16
+
 
 > **When running into bugs while trying to run your experiments, how did you perform debugging? Additionally, did you**
 > **try to profile your code or do you think it is already perfect?**
@@ -368,13 +467,18 @@ For our project we developed multiple Docker images for different purposes. We h
 >
 > Answer:
 
+
 Debugging methods varied among group members. Most team members used print statements and logging (loguru) to trace execution flow and inspect variable values during development. We also used VS Code's built-in debugger with breakpoints for more complex issues. The comprehensive logging we implemented in train.py helped us track down issues with data paths and Hydra's working directory changes. For testing, pytest's verbose output (`-v` flag) and traceback information helped identify failing test cases. We did not perform formal profiling of our code. Given more time, profiling would be valuable to identify bottlenecks in data preprocessing or training loops, but for our relatively small dataset and simple model architecture, performance was not a critical concern.
+
 
 ## Working in the cloud
 
+
 > In the following section we would like to know more about your experience when developing in the cloud.
 
+
 ### Question 17
+
 
 > **List all the GCP services that you made use of in your project and shortly explain what each service does?**
 >
@@ -385,9 +489,14 @@ Debugging methods varied among group members. Most team members used print state
 >
 > Answer:
 
---- question 17 fill here ---
+
+We used GCloud Compute, Bucket, Secrets Manager, Service Agent, Cloud Build and Container Registry.
+
+Bucket were used for storage of Docker files and images, Service Agent was used as non-human app identifier, Cloud Build was used to generate Docker containers. We did not get to use Compute as such since we didn’t train the model in the cloud.
+
 
 ### Question 18
+
 
 > **The backbone of GCP is the Compute engine. Explained how you made use of this service and what type of VMs**
 > **you used?**
@@ -400,36 +509,56 @@ Debugging methods varied among group members. Most team members used print state
 >
 > Answer:
 
---- question 18 fill here ---
+
+Of course some compute power was used to build Docker files etc, but we didn’t really get to use Compute, since we didn’t get to train the model in the cloud.
+
 
 ### Question 19
+
 
 > **Insert 1-2 images of your GCP bucket, such that we can see what data you have stored in it.**
 > **You can take inspiration from [this figure](figures/bucket.png).**
 >
 > Answer:
 
---- question 19 fill here ---
+
+![Bucket overview](figures/BucketOverview.png)
+![Build Bucket overview](figures/BucketBuildContent.png)
+
+
+
 
 ### Question 20
+
 
 > **Upload 1-2 images of your GCP artifact registry, such that we can see the different docker images that you have**
 > **stored. You can take inspiration from [this figure](figures/registry.png).**
 >
 > Answer:
 
---- question 20 fill here ---
+
+![Container Registry](figures/ArtifactRegistry.png)
+![Container Registry, detailed content](figures/Artifact2.png)
+
+
+
 
 ### Question 21
+
 
 > **Upload 1-2 images of your GCP cloud build history, so we can see the history of the images that have been build in**
 > **your project. You can take inspiration from [this figure](figures/build.png).**
 >
 > Answer:
 
---- question 21 fill here ---
+
+![Cloud Build history](figures/CloudBuild.png)
+
+
+
 
 ### Question 22
+
 
 > **Did you manage to train your model in the cloud using either the Engine or Vertex AI? If yes, explain how you did**
 > **it. If not, describe why.**
@@ -442,11 +571,15 @@ Debugging methods varied among group members. Most team members used print state
 >
 > Answer:
 
---- question 22 fill here ---
+
+No we did not.
+
 
 ## Deployment
 
+
 ### Question 23
+
 
 > **Did you manage to write an API for your model? If yes, explain how you did it and if you did anything special. If**
 > **not, explain how you would do it.**
@@ -459,9 +592,12 @@ Debugging methods varied among group members. Most team members used print state
 >
 > Answer:
 
+
 We did manage to write an API for our model using FastAPI. The API is implemented in src/mlops_exam_project/api.py and includes a root endpoint (GET /) that returns a status message, and a predict endpoint (POST /predict) that accepts wine feature data and returns a quality prediction. The API handles model loading gracefully with try-except blocks to provide fallback dummy predictions if the model fails to load. We implemented proper HTTP status codes and JSON response formatting. The API uses uvicorn as the ASGI server for serving the FastAPI application. The implementation is simple but functional, providing a RESTful interface for model inference.
 
+
 ### Question 24
+
 
 > **Did you manage to deploy your API, either in locally or cloud? If not, describe why. If yes, describe how and**
 > **preferably how you invoke your deployed service?**
@@ -475,9 +611,12 @@ We did manage to write an API for our model using FastAPI. The API is implemente
 >
 > Answer:
 
---- question 24 fill here ---
+
+--- We only deployed the api locally, using localhost. To invoke the API the user can send a post request with a JSON file containing a sample that they wish to get an estimated quality for.---
+
 
 ### Question 25
+
 
 > **Did you perform any unit testing and load testing of your API? If yes, explain how you did it and what results for**
 > **the load testing did you get. If not, explain how you would do it.**
@@ -490,9 +629,12 @@ We did manage to write an API for our model using FastAPI. The API is implemente
 >
 > Answer:
 
+
 We implemented unit tests for our API using pytest in test_api.py. These tests verify that the API endpoints respond correctly and that the training workflow can be invoked. However, we did not perform load testing of the API. If we were to implement load testing, we would use a tool like Locust or Apache JMeter to simulate multiple concurrent users sending requests to the /predict endpoint. This would help us understand the API's throughput (requests per second), response time under load, and identify the breaking point where the service becomes unresponsive. Load testing would be especially important before deploying to production to ensure the API can handle expected traffic volumes.
 
+
 ### Question 26
+
 
 > **Did you manage to implement monitoring of your deployed model? If yes, explain how it works. If not, explain how**
 > **monitoring would help the longevity of your application.**
@@ -505,13 +647,18 @@ We implemented unit tests for our API using pytest in test_api.py. These tests v
 >
 > Answer:
 
+
 We did not manage to implement monitoring for our deployed model. If we had implemented monitoring, it would help ensure the longevity of the application by tracking key metrics over time. We would want to monitor system metrics like CPU usage, memory consumption, request latency, and error rates to detect performance degradation or service outages. For the ML model specifically, we would track prediction distributions to detect data drift (when input data characteristics change over time) and model performance metrics if we had ground truth labels for incoming requests. Monitoring would alert us to issues like model degradation, unusual prediction patterns, or infrastructure problems before they impact users significantly.
+
 
 ## Overall discussion of project
 
+
 > In the following section we would like you to think about the general structure of your project.
 
+
 ### Question 27
+
 
 > **How many credits did you end up using during the project and what service was most expensive? In general what do**
 > **you think about working in the cloud?**
@@ -524,9 +671,17 @@ We did not manage to implement monitoring for our deployed model. If we had impl
 >
 > Answer:
 
---- question 27 fill here ---
+
+Group member Peter spent $2.
+Group member Adam spent $2.12
+Group member Mikael spent $2.
+
+
+Our ML model was very modest and building Docker container was cheap.
+
 
 ### Question 28
+
 
 > **Did you implement anything extra in your project that is not covered by other questions? Maybe you implemented**
 > **a frontend for your API, use extra version control features, a drift detection service, a kubernetes cluster etc.**
@@ -540,9 +695,12 @@ We did not manage to implement monitoring for our deployed model. If we had impl
 >
 > Answer:
 
+
 --- question 28 fill here ---
 
+
 ### Question 29
+
 
 > **Include a figure that describes the overall architecture of your system and what services that you make use of.**
 > **You can take inspiration from [this figure](figures/overview.png). Additionally, in your own words, explain the**
@@ -557,9 +715,13 @@ We did not manage to implement monitoring for our deployed model. If we had impl
 >
 > Answer:
 
---- question 29 fill here ---
+
+![Overview of System Architecture](figures/architecture.drawio.png)
+We each used our own PC (Windows, PC, Mac) and pushed to Github, so that this part was Git controlled. We then built Docker images based on local repo into the GCloud.
+
 
 ### Question 30
+
 
 > **Discuss the overall struggles of the project. Where did you spend most time and what did you do to overcome these**
 > **challenges?**
@@ -571,9 +733,12 @@ We did not manage to implement monitoring for our deployed model. If we had impl
 >
 > Answer:
 
---- question 30 fill here ---
+
+There are many systems involved, some commercial, some open source. Error messages are not always clear, especially Docker syntax and error messages are challenging. Our model was intentionally modest and did not pose any ML-trouble to us. The Git - Github framework is very powerful, but the nature of several people working together on building a system is complex.
+
 
 ### Question 31
+
 
 > **State the individual contributions of each team member. This is required information from DTU, because we need to**
 > **make sure all members contributed actively to the project. Additionally, state if/how you have used generative AI**
@@ -589,4 +754,17 @@ We did not manage to implement monitoring for our deployed model. If we had impl
 > *We have used ChatGPT to help debug our code. Additionally, we used GitHub Copilot to help write some of our code.*
 > Answer:
 
---- question 31 fill here ---
+
+s951108 has made the initial train.py and model.py on the basis of Pytorch, setup GCloud entities for Cloud Build, made architecture drawings, some bux fixing and pull request reviews.
+
+
+s224202 has setup GitHub repo, made api.py, unit-tests, initial code for data processing, some work on docker in cloud, and worked on github actions
+
+
+s183737 has made unittest, code coverage calculations, initial config setup, preliminary test_**.py files, minor work on train and model early, minor work on docker early.
+
+
+s260014 has refined train.py,  model.py and data.py, setup local Docker creation,  created evaluate.py, visualize.py,  setup and created W&B files, experiment tracking, added some command line interface based on either typer or Hydra,  refined and added Hydra config files, and created markdown files for documentation and instructions for  Pytorch, Docker and W&B files.
+
+
+We have used ChatGPT to help debug our code. Additionally, we used GitHub Copilot to help write some of our code.
