@@ -7,7 +7,7 @@
 Note that since our .src files utilizy, we must  *train_hydra.dockerfile* and *evaluate_hydra.dockerfile*.
 
 
-First  we explain how to use docker image built using 
+First  we explain how to use docker image built using
 ```bash
 train_hydra.dockerfile
 ```
@@ -146,7 +146,7 @@ docker build -f dockerfiles/evaluate_hydra.dockerfile . -t evaluate:latest
 ```
 
 
- 
+
 
 ### Run evaluation (mounting model + data)
 
@@ -170,7 +170,7 @@ docker run --rm --name evaluate \
   evaluate:latest \
   model_path=/models \
   model_name=model.pth
-``` 
+```
 
 
 
@@ -305,5 +305,5 @@ docker run --rm --name evaluate \
     -v $(pwd)/data:/data \
     evaluate:latest \
     /models/model.pth
-``` 
+```
 ```
