@@ -273,7 +273,7 @@ docker build -f dockerfiles/evaluate_hydra.dockerfile . -t evaluate:latest
 ```
 
 
-xx
+ 
 
 ### Run evaluation (mounting model + data)
 
