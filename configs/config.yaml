@@ -8,7 +8,7 @@ hydra:
   run:
     dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
   job:
-    chdir: true
+    chdir: false #true
 
 
 
@@ -29,3 +29,14 @@ figure_training_plot: training_plot.png  # Figure filename
 figure_training_accuracy_plot: training_accuracy_plot.png  # Figure filename
 figure_training_loss_plot: training_loss_plot.png  # Figure filename
 figure_visualization: performance_visualization.png  # Figure filename
+
+
+
+
+# Weights & Biases (wandb) configuration
+#use_wandb: true
+use_wandb_artifact: false
+wandb_artifact_name: red_wine_quality_model:latest
+use_wandb_registry: false
+wandb_registry_model_name: red_wine_quality_model
+wandb_registry_version: latest
