@@ -1,0 +1,33 @@
+program: src/mlops_exam_wandb/train_wandb.py
+name: wine_quality_sweep
+# program: m14_logging/train.py #train.py
+project: mlops_exam_project # mlops_exercises
+entity: mr-mikael-sorensen
+method:  random #bayes
+metric:
+    goal: minimize
+    name: val_loss
+parameters:
+    #lr:
+    training.lr:
+        min: 0.0001
+        max: 0.1
+        distribution: log_uniform_values # does not work bayes
+    #hidden_dims:
+    training.hidden_dims:
+        values: [[8, 8], [16, 8], [16, 16], [32, 16]]  #, [64, 32]
+    #dropout_rate:
+    training.dropout_rate:
+        min: 0.0
+        max: 0.15
+        distribution: uniform
+    # batch_size:
+    #     values: [16, 32, 64]
+    # epochs:
+    #     values: [5, 10, 15]
+run_cap: 10
+command:
+  - ${env}
+  - python
+  - ${program}
+  - ${args_no_hyphens}

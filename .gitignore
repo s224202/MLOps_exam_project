@@ -2,6 +2,8 @@ docs/site/
 
 #draw.io files
 *.bkp
+# wandb files
+wandb/
 
 # test cache
 manual_test/

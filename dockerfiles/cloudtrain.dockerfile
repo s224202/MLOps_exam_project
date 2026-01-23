@@ -1,0 +1,37 @@
+
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+
+# System dependencies
+RUN apt update && \
+    apt install --no-install-recommends -y build-essential gcc && \
+    apt clean && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /
+
+# --------------------------------------
+# Dependency layer (cacheable)
+# --------------------------------------
+COPY uv.lock uv.lock
+COPY pyproject.toml pyproject.toml
+
+# RUN uv sync --locked --no-cache --no-install-project
+ENV UV_LINK_MODE=copy
+RUN uv sync --locked --no-install-project
+
+# --------------------------------------
+# Application code (frequently changing)
+# --------------------------------------
+# Copy files from build context (project root)
+COPY README.md README.md
+COPY src/ src/
+COPY data/ data/
+# COPY ../models/ models/
+# creates a directory for storing trained model files (avoiding copying existing model files)
+RUN mkdir -p models
+COPY reports/ reports/
+
+
+# If you have a config file, uncomment the following line to copy it
+#COPY ../config.yaml config.yaml
+
+ENTRYPOINT ["uv", "run", "src/mlops_exam_project/train.py"]
