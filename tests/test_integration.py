@@ -39,7 +39,6 @@ def test_end_to_end_pipeline(raw_data_path, temp_processed_dir):
 
 def test_data_to_model_compatibility(raw_data_path):
     """Test that data output is compatible with model input."""
-    dataset = WineData(raw_data_path, download=True)
     model = WineQualityClassifier(input_dim=11, hidden_dims=[64, 32], output_dim=6)
 
     x = torch.randn(1, 11)
@@ -77,7 +76,6 @@ def test_train_with_processed_data(raw_data_path, temp_processed_dir, capsys):
 
 def test_multiple_forward_passes(raw_data_path):
     """Test multiple forward passes through model with different data samples."""
-    dataset = WineData(raw_data_path, download=True)
     model = WineQualityClassifier(input_dim=11, hidden_dims=[64, 32], output_dim=6)
 
     for i in range(5):
@@ -89,7 +87,6 @@ def test_multiple_forward_passes(raw_data_path):
 
 def test_model_reproducibility(raw_data_path):
     """Test that model produces consistent outputs with different weights."""
-    dataset = WineData(raw_data_path, download=True)
     model1 = WineQualityClassifier(input_dim=11, hidden_dims=[64, 32], output_dim=6)
     model2 = WineQualityClassifier(input_dim=11, hidden_dims=[64, 32], output_dim=6)
 
