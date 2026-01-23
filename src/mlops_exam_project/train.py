@@ -44,7 +44,7 @@ def train(cfg: DictConfig) -> None:
     # test_data_name = cfg.test_data_filename
     # model_path = Path(cfg.model_path)
     model_path = project_root / cfg.model_path
-    model_name = cfg.model_name
+    model_name = "onnx_wine_model.pth"
 
     # print working directory
     print(f"Working directory: {os.getcwd()}")
@@ -152,8 +152,24 @@ def train(cfg: DictConfig) -> None:
     print("Training complete")
     llogger.info("Training complete")
     torch.save(model.state_dict(), model_path / model_name)
+    # Export to ONNX using the stable torch.onnx.export API
+    example_input = torch.randn(1, 12).to(DEVICE)
+    onnx_file = model_path / "onnx_wine_model.onnx"
+    torch.onnx.export(
+        model,
+        example_input,
+        str(onnx_file),
+        export_params=True,
+        opset_version=11,
+        do_constant_folding=True,
+        input_names=["input"],
+        output_names=["output"],
+        dynamic_axes={"input": {0: "batch_size"}, "output": {0: "batch_size"}},
+    )
     print(f"Model saved to {model_path / model_name}")
     llogger.info("Model saved to {}", model_path / model_name)
+    print(f"ONNX model saved to {onnx_file}")
+    llogger.info("ONNX model saved to {}", onnx_file)
     # Plot training statistics
     fig, axs = plt.subplots(1, 2, figsize=(15, 5))
     # axs[0].plot(statistics["train_loss"],  marker='o', color='blue', markersize=2, label='Train Loss')
