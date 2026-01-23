@@ -106,7 +106,7 @@ async def predict_onnx(features: dict):
             import numpy as np
 
             # Load the ONNX model
-            ort_session = ort.InferenceSession("models/wine_quality_model.onnx")
+            ort_session = ort.InferenceSession("models/onnx_wine_model.onnx")
 
             # Prepare input data
             feature_array = np.array(
