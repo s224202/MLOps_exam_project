@@ -1,12 +1,19 @@
 from pathlib import Path
 import os
+import sys
 import torch
 from sklearn.metrics import classification_report, confusion_matrix
 from torch.utils.data import DataLoader
 from omegaconf import DictConfig
 import hydra
-from data import WineData
-from model import WineQualityClassifier
+
+# Handle imports for both Hydra context (relative) and test context (absolute)
+try:
+    from data import WineData
+    from model import WineQualityClassifier
+except ImportError:
+    from mlops_exam_project.data import WineData
+    from mlops_exam_project.model import WineQualityClassifier
 
 
 DEVICE = torch.device(
@@ -35,6 +42,57 @@ Args:
     hidden_dims: Comma-separated hidden layer dimensions (must match training)
     dropout_rate: Dropout rate (must match training)
 """
+
+
+def evaluate_model(model, test_dataloader, device=None, num_classes=6):
+    """Core evaluation logic - testable without Hydra.
+    
+    Args:
+        model: Trained model to evaluate
+        test_dataloader: DataLoader with test data
+        device: Device to run on (defaults to DEVICE)
+        num_classes: Number of output classes
+        
+    Returns:
+        dict with accuracy, predictions, labels, confusion matrix, and report
+    """
+    if device is None:
+        device = DEVICE
+        
+    model.eval()
+    all_predictions = []
+    all_labels = []
+    correct = 0
+    total = 0
+
+    with torch.no_grad():
+        for features, labels in test_dataloader:
+            features, labels = features.to(device), labels.to(device)
+            outputs = model(features)
+            predictions = outputs.argmax(dim=1)
+            all_predictions.extend(predictions.cpu().numpy())
+            all_labels.extend(labels.cpu().numpy())
+            correct += (predictions == labels).sum().item()
+            total += labels.size(0)
+
+    accuracy = correct / total if total > 0 else 0.0
+    cm = confusion_matrix(all_labels, all_predictions)
+    report = classification_report(
+        all_labels,
+        all_predictions,
+        target_names=[f"Quality {i}" for i in range(num_classes)],
+        digits=4,
+    )
+    
+    return {
+        "accuracy": accuracy,
+        "correct": correct,
+        "total": total,
+        "predictions": all_predictions,
+        "labels": all_labels,
+        "confusion_matrix": cm,
+        "report": report,
+    }
 
 
 @hydra.main(
@@ -97,45 +155,27 @@ def evaluate(cfg: DictConfig) -> None:
     model.load_state_dict(torch.load(model_path / model_name, map_location=DEVICE))
     print("Model loaded successfully\n")
 
-    # Evaluate
-    model.eval()
-    all_predictions = []
-    all_labels = []
-    correct = 0
-    total = 0
-
-    with torch.no_grad():
-        for features, labels in test_dataloader:
-            features, labels = features.to(DEVICE), labels.to(DEVICE)
-            # Forward pass
-            outputs = model(features)
-            predictions = outputs.argmax(dim=1)
-            # Accumulate results
-            all_predictions.extend(predictions.cpu().numpy())
-            all_labels.extend(labels.cpu().numpy())
-            correct += (predictions == labels).sum().item()
-            total += labels.size(0)
+    # Use core evaluation logic
+    results = evaluate_model(model, test_dataloader, DEVICE, num_classes)
+    
+    # Print results
+    accuracy = results["accuracy"]
+    correct = results["correct"]
+    total = results["total"]
+    cm = results["confusion_matrix"]
+    report = results["report"]
 
     # Calculate accuracy
-    accuracy = correct / total
     print(f"Test Accuracy: {accuracy:.4f} ({correct}/{total})\n")
 
     # Print detailed classification report
     print("Classification Report:")
     print("=" * 60)
-    print(
-        classification_report(
-            all_labels,
-            all_predictions,
-            target_names=[f"Quality {i}" for i in range(num_classes)],
-            digits=4,
-        )
-    )
+    print(report)
 
     # Print confusion matrix
     print("\nConfusion Matrix:")
     print("=" * 60)
-    cm = confusion_matrix(all_labels, all_predictions)
     print(cm)
     print("\nRows represent true labels, columns represent predicted labels")
 

@@ -3,11 +3,18 @@ import torch
 import hydra
 import os
 import matplotlib.pyplot as plt
-from data import WineData
-from model import WineQualityClassifier as MyAwesomeModel
+import sys
 from omegaconf import DictConfig
 from pathlib import Path
 from loguru import logger as llogger
+
+# Handle imports for both Hydra context (relative) and test context (absolute)
+try:
+    from data import WineData
+    from model import WineQualityClassifier as MyAwesomeModel
+except ImportError:
+    from mlops_exam_project.data import WineData
+    from mlops_exam_project.model import WineQualityClassifier as MyAwesomeModel
 
 llogger.remove()  # remove the default configuration
 llogger.add("logs/Mlops-31.log", rotation="10 MB", level="DEBUG")  # log to file
@@ -20,6 +27,91 @@ DEVICE = torch.device(
     else "cpu"
 )
 llogger.debug("Using device: {}", DEVICE)
+
+
+def train_core(
+    model,
+    train_dataloader,
+    val_dataloader,
+    epochs,
+    device=None,
+    learning_rate=0.001,
+):
+    """Core training logic - testable without Hydra.
+    
+    Args:
+        model: Model to train
+        train_dataloader: Training data loader
+        val_dataloader: Validation data loader
+        epochs: Number of epochs to train
+        device: Device to train on
+        learning_rate: Learning rate for optimizer
+        
+    Returns:
+        Tuple of (trained model, statistics dict)
+    """
+    if device is None:
+        device = DEVICE
+    
+    loss_fn = torch.nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    
+    statistics = {
+        "train_loss": [],
+        "train_accuracy": [],
+        "epoch_loss": [],
+        "epoch_accuracy": [],
+        "val_loss": [],
+        "val_accuracy": [],
+    }
+    
+    for epoch in range(epochs):
+        model.train()
+        epoch_loss = 0.0
+        epoch_correct = 0
+        epoch_total = 0
+        
+        for features, target in train_dataloader:
+            features, target = features.to(device), target.to(device)
+            optimizer.zero_grad()
+            y_pred = model(features)
+            loss = loss_fn(y_pred, target)
+            loss.backward()
+            optimizer.step()
+            
+            statistics["train_loss"].append(loss.item())
+            accuracy = (y_pred.argmax(dim=1) == target).float().mean().item()
+            statistics["train_accuracy"].append(accuracy)
+            
+            epoch_loss += loss.item()
+            epoch_correct += (y_pred.argmax(dim=1) == target).sum().item()
+            epoch_total += target.size(0)
+        
+        avg_loss = epoch_loss / len(train_dataloader)
+        avg_accuracy = epoch_correct / epoch_total
+        statistics["epoch_loss"].append(avg_loss)
+        statistics["epoch_accuracy"].append(avg_accuracy)
+        
+        model.eval()
+        with torch.no_grad():
+            val_accuracy = 0
+            val_loss = 0
+            val_steps = 0
+            for features, target in val_dataloader:
+                features, target = features.to(device), target.to(device)
+                y_pred = model(features)
+                loss = loss_fn(y_pred, target)
+                val_loss += loss.item()
+                accuracy = (y_pred.argmax(dim=1) == target).float().mean().item()
+                val_accuracy += accuracy
+                val_steps += 1
+            val_accuracy /= val_steps
+            val_loss /= val_steps
+            
+            statistics["val_loss"].append(val_loss)
+            statistics["val_accuracy"].append(val_accuracy)
+    
+    return model, statistics
 
 
 @hydra.main(
@@ -71,83 +163,15 @@ def train(cfg: DictConfig) -> None:
         val_set, batch_size=cfg.training.batch_size
     )
 
-    loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=cfg.training.lr)
-
-    statistics = {
-        "train_loss": [],
-        "train_accuracy": [],
-        "epoch_loss": [],
-        "epoch_accuracy": [],
-        "val_loss": [],
-        "val_accuracy": [],
-    }
-    for epoch in range(cfg.training.epochs):
-        model.train()
-        epoch_loss = 0.0
-        epoch_correct = 0
-        epoch_total = 0
-        llogger.info("Starting epoch {}", epoch)
-
-        for i, (features, target) in enumerate(train_dataloader):
-            features, target = features.to(DEVICE), target.to(DEVICE)
-            optimizer.zero_grad()
-            y_pred = model(features)
-            loss = loss_fn(y_pred, target)
-            loss.backward()
-            optimizer.step()
-
-            # Record batch statistics
-            statistics["train_loss"].append(loss.item())
-            accuracy = (y_pred.argmax(dim=1) == target).float().mean().item()
-            statistics["train_accuracy"].append(accuracy)
-
-            # Accumulate epoch statistics
-            epoch_loss += loss.item()
-            epoch_correct += (y_pred.argmax(dim=1) == target).sum().item()
-            epoch_total += target.size(0)
-
-            if i % 100 == 0:
-                print(f"Epoch {epoch}, iter {i}, loss: {loss.item()}")
-
-        # Calculate epoch averages
-        avg_loss = epoch_loss / len(train_dataloader)
-        llogger.info("Epoch {} average loss: {}", epoch, avg_loss)
-        avg_accuracy = epoch_correct / epoch_total
-        llogger.info("Epoch {} average accuracy: {}", epoch, avg_accuracy)
-        statistics["epoch_loss"].append(avg_loss)
-        statistics["epoch_accuracy"].append(avg_accuracy)
-
-        # do validation every epoch
-        llogger.info("Starting validation for epoch {}", epoch)
-        model.eval()
-        with torch.no_grad():
-            val_accuracy = 0
-            val_loss = 0
-            val_steps = 0
-            for features, target in val_dataloader:
-                features, target = features.to(DEVICE), target.to(DEVICE)
-                y_pred = model(features)
-                loss = loss_fn(y_pred, target)
-                val_loss += loss.item()
-                accuracy = (y_pred.argmax(dim=1) == target).float().mean().item()
-                val_accuracy += accuracy
-                val_steps += 1
-            val_accuracy /= val_steps
-            val_loss /= val_steps
-
-            statistics["val_loss"].append(val_loss)
-            statistics["val_accuracy"].append(val_accuracy)
-
-            llogger.info(
-                "Epoch {} validation loss: {}, validation accuracy: {}",
-                epoch,
-                val_loss,
-                val_accuracy,
-            )
-            print(
-                f"Epoch {epoch}, Validation loss: {val_loss}, Validation accuracy: {val_accuracy}"
-            )
+    # Use core training function
+    model, statistics = train_core(
+        model,
+        train_dataloader,
+        val_dataloader,
+        cfg.training.epochs,
+        device=DEVICE,
+        learning_rate=cfg.training.lr,
+    )
 
     print("Training complete")
     llogger.info("Training complete")
