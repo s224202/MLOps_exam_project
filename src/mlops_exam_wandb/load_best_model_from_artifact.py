@@ -57,7 +57,7 @@ def load_model_from_artifact(
     input_dim = metadata.get("input_dim", 12)
     output_dim = metadata.get("output_dim", 6)
 
-    print(f"Loading model with configuration from artifact:")
+    print("Loading model with configuration from artifact:")
     print(f"  - Hidden dimensions: {hidden_dims}")
     print(f"  - Dropout rate: {dropout_rate}")
     print(f"  - Input dimension: {input_dim}")
@@ -70,7 +70,9 @@ def load_model_from_artifact(
         dropout_rate=dropout_rate,
     ).to(DEVICE)
 
-    model.load_state_dict(torch.load(model_path, map_location=DEVICE, weights_only=True))
+    model.load_state_dict(
+        torch.load(model_path, map_location=DEVICE, weights_only=True)
+    )
     model.eval()
 
     print(f"Model loaded from artifact: {artifact_name}")
@@ -125,7 +127,9 @@ def load_best_model(
             continue
 
         value = metadata[metric]
-        if (mode == "min" and value < best_value) or (mode == "max" and value > best_value):
+        if (mode == "min" and value < best_value) or (
+            mode == "max" and value > best_value
+        ):
             best_value = value
             best_artifact = artifact
 
@@ -145,7 +149,6 @@ def load_best_model(
 if __name__ == "__main__":
     typer.run(load_model_from_artifact)
 
-    
     # print("Loading model with highest accuracy:")
     # model_best = load_best_model(metric="final_val_accuracy", mode="max")
 
@@ -154,13 +157,10 @@ if __name__ == "__main__":
 
     # print(f"\nModels loaded successfully on {DEVICE}")
 
-
-        #example usage:
+    # example usage:
     # uv run src/mlops_exam_wandb/load_model_from_artifact.py
 
     # example with specified artifact, project, entity:
-    # uv run src/mlops_exam_wandb/load_model_from_artifact.py --artifact-name "red_wine_quality_model:v17" 
+    # uv run src/mlops_exam_wandb/load_model_from_artifact.py --artifact-name "red_wine_quality_model:v17"
 
     # uv run src/mlops_exam_wandb/load_model_from_artifact.py --artifact-name "red_wine_quality_model:v0" --project "mlops_exam_project" --entity "mr-mikael-sorensen"
-
-    

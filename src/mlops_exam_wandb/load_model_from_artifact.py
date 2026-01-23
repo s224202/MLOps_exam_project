@@ -1,6 +1,3 @@
-
-
-
 import os
 from pathlib import Path
 from typing import Optional
@@ -27,7 +24,9 @@ def _find_checkpoint(artifact_dir: Path) -> Path:
         matches = list(artifact_dir.rglob(ext))
         if matches:
             return matches[0]
-    raise FileNotFoundError(f"No checkpoint file (*.pth or *.pt) found in {artifact_dir}")
+    raise FileNotFoundError(
+        f"No checkpoint file (*.pth or *.pt) found in {artifact_dir}"
+    )
 
 
 def load_model_from_artifact(
@@ -90,19 +89,17 @@ def load_model_from_artifact(
 
 if __name__ == "__main__":
     typer.run(load_model_from_artifact)
-    #model = load_model_from_artifact()
-    #print(f"Model loaded successfully on {DEVICE}")
+    # model = load_model_from_artifact()
+    # print(f"Model loaded successfully on {DEVICE}")
 
-
-    #example usage:
+    # example usage:
     # uv run src/mlops_exam_wandb/load_model_from_artifact.py
 
     # example with specified artifact, project, entity:
-    # uv run src/mlops_exam_wandb/load_model_from_artifact.py --artifact-name "red_wine_quality_model:v17" 
+    # uv run src/mlops_exam_wandb/load_model_from_artifact.py --artifact-name "red_wine_quality_model:v17"
 
     # uv run src/mlops_exam_wandb/load_model_from_artifact.py --artifact-name "red_wine_quality_model:v0" --project "mlops_exam_project" --entity "mr-mikael-sorensen"
 
-    
 
 # import os
 # from pathlib import Path

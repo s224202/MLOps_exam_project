@@ -20,8 +20,6 @@ from pathlib import Path
 # WANDB_JOB_TYPE = os.getenv("WANDB_JOB_TYPE", "training")
 
 
-
-
 DEVICE = torch.device(
     "cuda"
     if torch.cuda.is_available()
@@ -42,9 +40,7 @@ def train(cfg: DictConfig) -> None:
     project_root = Path(
         __file__
     ).parent.parent.parent  # Getting the project root directory
-    
-    
-    
+
     # Ensure .env is loaded from project root (Hydra changes cwd)
     load_dotenv(project_root / ".env", override=True)
 
@@ -54,12 +50,12 @@ def train(cfg: DictConfig) -> None:
     wandb_api_key = os.getenv("WANDB_API_KEY")
 
     if not wandb_project:
-        raise ValueError("WANDB_PROJECT is not set. Please set it in .env or the environment.")
+        raise ValueError(
+            "WANDB_PROJECT is not set. Please set it in .env or the environment."
+        )
     if wandb_api_key:
         wandb.login(key=wandb_api_key)
-    
-    
-    
+
     # data_path = Path(cfg.data_path)
     data_path = project_root / cfg.data_path
     train_data_name = cfg.train_data_filename
@@ -78,43 +74,40 @@ def train(cfg: DictConfig) -> None:
     print(f"Validation data path: {data_path / val_data_name}")
     print(f"Model will be saved to: {model_path / model_name}")
 
-    lr=cfg.training.lr
-    batch_size=cfg.training.batch_size
-    epochs=cfg.training.epochs
-    #val_split=cfg.data.val_split
-    hidden_dims=cfg.training.hidden_dims
-    dropout_rate=cfg.training.dropout_rate
+    lr = cfg.training.lr
+    batch_size = cfg.training.batch_size
+    epochs = cfg.training.epochs
+    # val_split=cfg.data.val_split
+    hidden_dims = cfg.training.hidden_dims
+    dropout_rate = cfg.training.dropout_rate
 
-
-
-    print(f"{lr=}, {batch_size=}, {epochs=},   {hidden_dims=}, {dropout_rate=}") #  val_split
+    print(
+        f"{lr=}, {batch_size=}, {epochs=},   {hidden_dims=}, {dropout_rate=}"
+    )  #  val_split
     wandb.init(
-        project=wandb_project, # WANDB_PROJECT,
-        entity= wandb_entity, #WANDB_ENTITY,
-        job_type=wandb_job_type, # WANDB_JOB_TYPE,
-        config={"lr": lr, 
-                "batch_size": batch_size, 
-                "epochs": epochs, 
-                #"val_split": val_split,
-                "hidden_dims": hidden_dims,
-                "dropout_rate": dropout_rate
-                },
+        project=wandb_project,  # WANDB_PROJECT,
+        entity=wandb_entity,  # WANDB_ENTITY,
+        job_type=wandb_job_type,  # WANDB_JOB_TYPE,
+        config={
+            "lr": lr,
+            "batch_size": batch_size,
+            "epochs": epochs,
+            # "val_split": val_split,
+            "hidden_dims": hidden_dims,
+            "dropout_rate": dropout_rate,
+        },
     )
 
     model = MyAwesomeModel(
         input_dim=12,
         hidden_dims=hidden_dims,
         output_dim=6,
-        dropout_rate= dropout_rate,
+        dropout_rate=dropout_rate,
     ).to(DEVICE)
     train_set = WineData(data_path / train_data_name, False)
     val_set = WineData(data_path / val_data_name, False)
-    train_dataloader = torch.utils.data.DataLoader(
-        train_set, batch_size=batch_size
-    )
-    val_dataloader = torch.utils.data.DataLoader(
-        val_set, batch_size= batch_size
-    )
+    train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=batch_size)
+    val_dataloader = torch.utils.data.DataLoader(val_set, batch_size=batch_size)
 
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -184,21 +177,21 @@ def train(cfg: DictConfig) -> None:
                 f"Epoch {epoch}, Validation loss: {val_loss}, Validation accuracy: {val_accuracy}"
             )
 
-
             # Log metrics to wandb  at the end of each epoch for display in the dashboard
-            wandb.log({
-                "epoch": epoch,
-                "train_loss": avg_loss,
-                "train_accuracy": avg_accuracy,
-                "val_loss": val_loss,
-                "val_accuracy": val_accuracy,
-            })  
+            wandb.log(
+                {
+                    "epoch": epoch,
+                    "train_loss": avg_loss,
+                    "train_accuracy": avg_accuracy,
+                    "val_loss": val_loss,
+                    "val_accuracy": val_accuracy,
+                }
+            )
 
-
-
-
-             # add a plot of histogram of the gradients
-            grads = torch.cat([p.grad.flatten() for p in model.parameters() if p.grad is not None], 0)
+            # add a plot of histogram of the gradients
+            grads = torch.cat(
+                [p.grad.flatten() for p in model.parameters() if p.grad is not None], 0
+            )
             wandb.log({"gradients": wandb.Histogram(grads.cpu())})
 
     print("Training complete")
@@ -207,47 +200,42 @@ def train(cfg: DictConfig) -> None:
     torch.save(model.state_dict(), model_path / model_name)
     print(f"Model saved to {model_path / model_name}")
 
-
-
-
     # log the model as an artifact to wandb
     # final_accuracy = statistics["val_accuracy"][-1]
     # final_loss = statistics["val_loss"][-1]
     final_val_accuracy = statistics["val_accuracy"][-1]
     final_val_loss = statistics["val_loss"][-1]
-    #torch.save(model.state_dict(), "model.pth")
+    # torch.save(model.state_dict(), "model.pth")
     artifact = wandb.Artifact(
         name="red_wine_quality_model",
         type="model",
         description="A model trained to classify red wine quality",
         metadata={
-                "final_val_accuracy": final_val_accuracy, 
-                "final_val_loss": final_val_loss, 
-                "hidden_dims": hidden_dims,
-                "dropout_rate": dropout_rate,
-                "input_dim": 12,
-                "output_dim": 6,
-                "learning_rate": lr,
-                "batch_size": batch_size,
-                "epochs": epochs,
-                },
-        )
+            "final_val_accuracy": final_val_accuracy,
+            "final_val_loss": final_val_loss,
+            "hidden_dims": hidden_dims,
+            "dropout_rate": dropout_rate,
+            "input_dim": 12,
+            "output_dim": 6,
+            "learning_rate": lr,
+            "batch_size": batch_size,
+            "epochs": epochs,
+        },
+    )
     artifact.add_file(str(model_path / model_name))
-    #artifact.tag("model")
-    #artifact.tag("corruptmnist")
-    #artifact.add_tags(["model", "corruptmnist"])
+    # artifact.tag("model")
+    # artifact.tag("corruptmnist")
+    # artifact.add_tags(["model", "corruptmnist"])
     wandb.log_artifact(artifact)
-
-
 
     # artifact.add_file(str(model_path / model_name))
     # wandb.log_artifact(artifact)
-    
+
     artifact.wait()
-    wandb.run.link_artifact(artifact, f"{wandb_entity}/model-registry/red_wine_quality_model")
+    wandb.run.link_artifact(
+        artifact, f"{wandb_entity}/model-registry/red_wine_quality_model"
+    )
     print(f"Model logged to registry with final_val_accuracy: {final_val_accuracy}")
-
-
 
     # Plot training statistics
     fig, axs = plt.subplots(1, 2, figsize=(15, 5))
@@ -299,7 +287,6 @@ def train(cfg: DictConfig) -> None:
     # fig_dir.mkdir(parents=True, exist_ok=True)
     # fig.savefig(fig_dir / cfg.figure_training_plot, bbox_inches="tight")
 
-
     # img_display = cfg.figure_training_plot
 
     # # normalize images for better visualization so that they are in [0, 255]
@@ -323,9 +310,7 @@ def train(cfg: DictConfig) -> None:
     plt.close()  # close the plot to avoid memory leaks and overlapping figures
 
 
-    
-
 if __name__ == "__main__":
     train()
-    #typer.run(train)
+    # typer.run(train)
     wandb.finish()
