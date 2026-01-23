@@ -3,7 +3,7 @@
 
 ##  Set-up
 
-Add  relevant W&B information  the .env file  (*WANDB_API_KEY*, *WANDB_PROJECT* and *WANDB_ENTITY* are mandatory), such as 
+Add  relevant W&B information  the .env file  (*WANDB_API_KEY*, *WANDB_PROJECT* and *WANDB_ENTITY* are mandatory), such as
 
 ```bash
 WANDB_API_KEY=<WANDB_API_KEY>
@@ -16,7 +16,7 @@ WANDB_JOB_TYPE=<WANDB_JOB_TYPE>
 ```bash
 WANDB_API_KEY=<WANDB_API_KEY>
 WANDB_PROJECT=mlops_exam_project
-WANDB_ENTITY=mr-mikael-sorensen 
+WANDB_ENTITY=mr-mikael-sorensen
 WANDB_JOB_TYPE=training
 ```
 
@@ -31,7 +31,7 @@ uv run wandb login
 
 Run the training script with default configuration:
  ```bash
- uv run python src/mlops_exam_wandb/train_wandb.py  
+ uv run python src/mlops_exam_wandb/train_wandb.py
 ```
 
 
@@ -62,8 +62,8 @@ Here is a three-step procedure on how to use the Weights & Biases agent sweep.
 ```bash
 program: src/mlops_exam_wandb/train_wandb.py
 name: wine_quality_sweep
-project: mlops_exam_project  
-entity: mr-mikael-sorensen  
+project: mlops_exam_project
+entity: mr-mikael-sorensen
 method:  random #bayes
 metric:
     goal: minimize
@@ -76,7 +76,7 @@ parameters:
         distribution: log_uniform_values # does not work bayes
     #hidden_dims:
     training.hidden_dims:
-        values: [[8, 8], [16, 8], [16, 16], [32, 16]]  
+        values: [[8, 8], [16, 8], [16, 16], [32, 16]]
     #dropout_rate:
     training.dropout_rate:
         min: 0.0
@@ -100,7 +100,7 @@ command:
 ```bash
 uv run wandb sweep configs/sweep.yaml
 ```
-This will output a sweep ID, denoted <SWEEP_ID>. 
+This will output a sweep ID, denoted <SWEEP_ID>.
 
 3. start an agent to run the sweep:
 
@@ -139,7 +139,7 @@ Examples with specified artifact, project, entity:
 ```bash
 uv run src/mlops_exam_wandb/load_model_from_artifact.py --artifact-name "red_wine_quality_model:v17"
 ```
-or  
+or
 ```bash
  uv run src/mlops_exam_wandb/load_model_from_artifact.py --artifact-name "red_wine_quality_model:v17" --project "mlops_exam_project" --entity "mr-mikael-sorensen"
 ```
@@ -152,7 +152,7 @@ model = load_model_from_artifact("red_wine_quality_model:v2")
 ```
 
 
- 
+
 
 
 
@@ -164,7 +164,7 @@ Model from the W&B model registr  registry can for instance  be loaded as follow
 uv run python src/mlops_exam_wandb/load_model_from_registry.py
 ```
 
- 
+
 ## Evaluate a  model
 
 A model  can be evaluated  use it in three ways.
@@ -180,10 +180,10 @@ uv run python src/mlops_exam_wandb/evaluate_wandb.py
 Example:
 
 ```bash
-uv run python src/mlops_exam_wandb/evaluate_wandb.py use_wandb_artifact=true wandb_artifact_name=red_wine_quality_model:latest  
+uv run python src/mlops_exam_wandb/evaluate_wandb.py use_wandb_artifact=true wandb_artifact_name=red_wine_quality_model:latest
 +wandb_artifact_name=red_wine_quality_model:latest
 ```
-or 
+or
 
 ```bash
 uv run python src/mlops_exam_wandb/evaluate_wandb.py ++use_wandb_artifact=true ++wandb_artifact_name=red_wine_quality_model:latest

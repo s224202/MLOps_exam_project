@@ -1,8 +1,8 @@
 program: src/mlops_exam_wandb/train_wandb.py
 name: wine_quality_sweep
 # program: m14_logging/train.py #train.py
-project: mlops_exam_project # mlops_exercises 
-entity: mr-mikael-sorensen  
+project: mlops_exam_project # mlops_exercises
+entity: mr-mikael-sorensen
 method:  random #bayes
 metric:
     goal: minimize
@@ -31,7 +31,3 @@ command:
   - python
   - ${program}
   - ${args_no_hyphens}
-
-
-
- 
