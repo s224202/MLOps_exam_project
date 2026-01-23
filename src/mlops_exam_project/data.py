@@ -50,7 +50,7 @@ class WineData(Dataset):
         # Wine quality ranges from 3-8.  We convert to 0-5
         target = target - 3
         return torch.tensor(features, dtype=torch.float32), torch.tensor(
-            target, dtype=torch.float32
+            target, dtype=torch.long
         )
 
         return torch.tensor(features, dtype=torch.float32), torch.tensor(
