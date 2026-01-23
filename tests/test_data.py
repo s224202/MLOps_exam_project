@@ -35,5 +35,5 @@ def test_getitem():
     assert isinstance(sample[0], torch.Tensor)
     assert isinstance(sample[1], torch.Tensor)
     assert len(sample[0]) == len(dataset.data.columns) - 1
-    assert isinstance(sample[1].item(), float)
-    assert 0 <= sample[1] <= 5
+    assert isinstance(sample[1].item(), int)
+    assert 0 <= sample[1].item() <= 5
