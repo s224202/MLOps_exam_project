@@ -4,7 +4,6 @@ import pandas as pd
 from pathlib import Path
 import torch
 import pytest
-import tempfile
 from unittest.mock import patch, MagicMock
 
 
@@ -53,6 +52,7 @@ def test_wine_data_len():
 def test_preprocess_cli(tmp_path=Path("data/processed")):
     """Test that the preprocess function is callable."""
     from mlops_exam_project.data import preprocess as prep_func
+
     assert callable(prep_func)
 
 
@@ -128,7 +128,9 @@ def test_split_data_on_real_csv(tmp_path):
     output_dir = tmp_path / "real_splits"
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    split_data(cleaned, output_dir, train_test_split_ratio=0.8, train_val_split_ratio=0.9)
+    split_data(
+        cleaned, output_dir, train_test_split_ratio=0.8, train_val_split_ratio=0.9
+    )
 
     train_fp = output_dir / "train_data.csv"
     val_fp = output_dir / "val_data.csv"

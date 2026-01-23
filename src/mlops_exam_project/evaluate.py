@@ -1,6 +1,5 @@
 from pathlib import Path
 import os
-import sys
 import torch
 from sklearn.metrics import classification_report, confusion_matrix
 from torch.utils.data import DataLoader
@@ -46,19 +45,19 @@ Args:
 
 def evaluate_model(model, test_dataloader, device=None, num_classes=6):
     """Core evaluation logic - testable without Hydra.
-    
+
     Args:
         model: Trained model to evaluate
         test_dataloader: DataLoader with test data
         device: Device to run on (defaults to DEVICE)
         num_classes: Number of output classes
-        
+
     Returns:
         dict with accuracy, predictions, labels, confusion matrix, and report
     """
     if device is None:
         device = DEVICE
-        
+
     model.eval()
     all_predictions = []
     all_labels = []
@@ -83,7 +82,7 @@ def evaluate_model(model, test_dataloader, device=None, num_classes=6):
         target_names=[f"Quality {i}" for i in range(num_classes)],
         digits=4,
     )
-    
+
     return {
         "accuracy": accuracy,
         "correct": correct,
@@ -157,7 +156,7 @@ def evaluate(cfg: DictConfig) -> None:
 
     # Use core evaluation logic
     results = evaluate_model(model, test_dataloader, DEVICE, num_classes)
-    
+
     # Print results
     accuracy = results["accuracy"]
     correct = results["correct"]

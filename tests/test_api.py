@@ -1,6 +1,5 @@
 from mlops_exam_project.train import train
 from pathlib import Path
-import pytest
 
 
 def test_train():

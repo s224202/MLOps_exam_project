@@ -1,4 +1,3 @@
-
 import torch
 import hydra
 import os
@@ -26,6 +25,7 @@ DEVICE = torch.device(
     else "cpu"
 )
 llogger.debug("Using device: {}", DEVICE)
+
 
 def train_core(
     model,
@@ -99,9 +99,8 @@ def train_core(
             statistics["val_accuracy"].append(val_accuracy)
     return model, statistics
 
-@hydra.main(
-    version_base=None, config_path="../../configs", config_name="config"
-)
+
+@hydra.main(version_base=None, config_path="../../configs", config_name="config")
 def train(cfg: DictConfig) -> None:
     print("Training day and night")
     project_root = Path(__file__).parent.parent.parent
@@ -205,8 +204,6 @@ def train(cfg: DictConfig) -> None:
     fig_dir = Path(cfg.figure_path)
     fig_dir.mkdir(parents=True, exist_ok=True)
     fig.savefig(fig_dir / cfg.figure_training_plot, bbox_inches="tight")
-
-
 
 
 if __name__ == "__main__":
