@@ -14,6 +14,7 @@ WORKDIR /
 # --------------------------------------
 COPY ../uv.lock uv.lock
 COPY ../pyproject.toml pyproject.toml
+COPY ../LICENSE LICENSE
 
 ENV UV_LINK_MODE=copy
 RUN --mount=type=cache,target=/root/.cache/uv \
@@ -30,10 +31,23 @@ COPY ../README.md README.md
 # We mount trained weights and evaluation data at runtime
 RUN mkdir -p /models /data
 
-COPY ../reports/ reports/
+
+RUN mkdir -p configs
+# better to make  configs/  mountable.
+# COPY ../models/ models/
+# creates a directory for storing trained model files (avoiding copying existing model files)
+RUN mkdir -p models
+#COPY ../reports/ reports/
+RUN mkdir -p reports
+
+
+# COPY ../reports/ reports/
 
 # Data directory expected by corrupt_mnist()
 # -p flag - creates parent directories as needed and doesn't error if directories already exist
 #RUN mkdir -p /data /models # creates a directory for storing data file and  creates a directory for storing trained model files
+
+# disable Hydra changing cwd
+ENV HYDRA_FULL_ERROR=1
 
 ENTRYPOINT ["uv", "run", "src/mlops_exam_project/evaluate.py"]

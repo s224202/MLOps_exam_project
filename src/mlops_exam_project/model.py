@@ -1,13 +1,16 @@
 import torch
 from torch import nn
+
+
 class WineQualityClassifier(nn.Module):
     """Feedforward neural network for wine quality classification."""
+
     def __init__(
         self,
         input_dim: int = 11,
         hidden_dims: list[int] = [64, 32],
         output_dim: int = 6,
-        dropout_rate: float = 0.2
+        dropout_rate: float = 0.2,
     ):
         """
         Initialize the wine quality classifier.
@@ -22,11 +25,11 @@ class WineQualityClassifier(nn.Module):
         self.hidden_dims = hidden_dims
         self.output_dim = output_dim
         self.dropout_rate = dropout_rate
-        # Build the network layers
+
         layers = []
         prev_dim = input_dim
-        # Add hidden layers
         for hidden_dim in hidden_dims:
+            # Add hidden layer
             layers.append(nn.Linear(prev_dim, hidden_dim))
             layers.append(nn.ReLU())
             layers.append(nn.Dropout(dropout_rate))
@@ -34,6 +37,7 @@ class WineQualityClassifier(nn.Module):
         # Add output layer
         layers.append(nn.Linear(prev_dim, output_dim))
         self.network = nn.Sequential(*layers)
+
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Forward pass through the network.
@@ -43,17 +47,15 @@ class WineQualityClassifier(nn.Module):
             Output logits of shape (batch_size, output_dim)
         """
         return self.network(x)
+
+
 if __name__ == "__main__":
     # Test the model
     model = WineQualityClassifier(
-        input_dim=11,
-        hidden_dims=[64, 32, 16],
-        output_dim=6,
-        dropout_rate=0.3
+        input_dim=11, hidden_dims=[64, 32, 16], output_dim=6, dropout_rate=0.3
     )
     # Create a random input
     x = torch.randn(8, 11)  # Batch of 8 samples
     # Forward pass
     output = model(x)
     print(output.shape)  # Should be (8, 6)
-
