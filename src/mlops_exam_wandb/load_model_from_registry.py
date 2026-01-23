@@ -25,7 +25,9 @@ def _find_checkpoint(artifact_dir: Path) -> Path:
         matches = list(artifact_dir.rglob(pattern))
         if matches:
             return matches[0]
-    raise FileNotFoundError(f"No checkpoint file (*.pth or *.pt) found in {artifact_dir}")
+    raise FileNotFoundError(
+        f"No checkpoint file (*.pth or *.pt) found in {artifact_dir}"
+    )
 
 
 def load_model_from_registry(
@@ -58,7 +60,9 @@ def load_model_from_registry(
     run = wandb.init(project="mlops_exam_project", entity=entity, job_type="inference")
 
     registry_path = f"{entity}/model-registry/{model_name}"
-    artifact_path = f"{registry_path}:{alias}" if alias else f"{registry_path}:{version}"
+    artifact_path = (
+        f"{registry_path}:{alias}" if alias else f"{registry_path}:{version}"
+    )
 
     artifact = run.use_artifact(artifact_path, type="model")
     artifact_dir = Path(artifact.download())
@@ -92,6 +96,7 @@ def load_model_from_registry(
     wandb.finish()
 
     return model
+
 
 # import os
 # from pathlib import Path
@@ -221,12 +226,16 @@ def load_best_model_from_registry(
             continue
 
         value = metadata[metric]
-        if (mode == "min" and value < best_value) or (mode == "max" and value > best_value):
+        if (mode == "min" and value < best_value) or (
+            mode == "max" and value > best_value
+        ):
             best_value = value
             best_artifact = artifact
 
     if best_artifact is None:
-        raise ValueError(f"No artifacts found in registry with metadata field '{metric}'")
+        raise ValueError(
+            f"No artifacts found in registry with metadata field '{metric}'"
+        )
 
     print(f"Found best model with {metric}={best_value} (mode={mode})")
     print(f"Version: {best_artifact.version}")
