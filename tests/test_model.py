@@ -2,7 +2,6 @@ import torch
 from mlops_exam_project.train import train_core
 from mlops_exam_project.model import WineQualityClassifier
 from torch.utils.data import DataLoader, TensorDataset
-import numpy as np
 
 
 def test_model_initialization():
@@ -28,6 +27,7 @@ def test_model_forward_batch():
     output = model(x)
     assert isinstance(output, torch.Tensor)
     assert output.shape == torch.Size([10, 6])
+
 
 def test_model_parameters():
     """Test that Model has trainable parameters."""
@@ -65,18 +65,18 @@ def test_train_core_function():
         output_dim=6,
         dropout_rate=0.2,
     )
-    
+
     # Create small training and validation datasets
     train_features = torch.randn(32, 11)
     train_labels = torch.randint(0, 6, (32,))
     train_dataset = TensorDataset(train_features, train_labels)
     train_loader = DataLoader(train_dataset, batch_size=8)
-    
+
     val_features = torch.randn(16, 11)
     val_labels = torch.randint(0, 6, (16,))
     val_dataset = TensorDataset(val_features, val_labels)
     val_loader = DataLoader(val_dataset, batch_size=8)
-    
+
     # Train for 1 epoch
     trained_model, statistics = train_core(
         model,
@@ -86,7 +86,7 @@ def test_train_core_function():
         device="cpu",
         learning_rate=0.001,
     )
-    
+
     # Verify output
     assert isinstance(trained_model, WineQualityClassifier)
     assert "train_loss" in statistics
@@ -105,27 +105,27 @@ def test_train_core_statistics():
         output_dim=6,
         dropout_rate=0.1,
     )
-    
+
     train_features = torch.randn(16, 11)
     train_labels = torch.randint(0, 6, (16,))
     train_dataset = TensorDataset(train_features, train_labels)
     train_loader = DataLoader(train_dataset, batch_size=4)
-    
+
     val_features = torch.randn(8, 11)
     val_labels = torch.randint(0, 6, (8,))
     val_dataset = TensorDataset(val_features, val_labels)
     val_loader = DataLoader(val_dataset, batch_size=4)
-    
+
     model, stats = train_core(
         model, train_loader, val_loader, epochs=2, device="cpu", learning_rate=0.01
     )
-    
+
     # Verify statistics structure
     assert stats["epoch_loss"][0] > 0
     assert 0 <= stats["epoch_accuracy"][0] <= 1
     assert stats["val_loss"][0] > 0
     assert 0 <= stats["val_accuracy"][0] <= 1
-    
+
     # Training should have more loss samples than epochs
     assert len(stats["train_loss"]) > 2
 
@@ -138,26 +138,26 @@ def test_train_core_model_training():
         output_dim=6,
         dropout_rate=0.1,
     )
-    
+
     # Get initial weights
     initial_weights = [p.clone() for p in model.parameters()]
-    
+
     # Create simple datasets
     train_features = torch.randn(20, 11)
     train_labels = torch.randint(0, 6, (20,))
     train_dataset = TensorDataset(train_features, train_labels)
     train_loader = DataLoader(train_dataset, batch_size=4)
-    
+
     val_features = torch.randn(8, 11)
     val_labels = torch.randint(0, 6, (8,))
     val_dataset = TensorDataset(val_features, val_labels)
     val_loader = DataLoader(val_dataset, batch_size=4)
-    
+
     # Train
     trained_model, _ = train_core(
         model, train_loader, val_loader, epochs=1, device="cpu", learning_rate=0.01
     )
-    
+
     # Check that weights changed
     final_weights = [p for p in trained_model.parameters()]
     weights_changed = False
@@ -165,7 +165,5 @@ def test_train_core_model_training():
         if not torch.allclose(init_w, final_w):
             weights_changed = True
             break
-    
+
     assert weights_changed, "Model weights should change during training"
-
-

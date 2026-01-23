@@ -3,7 +3,6 @@ from torch.utils.data import Dataset
 import pandas as pd
 from pathlib import Path
 import pytest
-import tempfile
 import torch
 from unittest.mock import patch, MagicMock
 
@@ -42,7 +41,9 @@ def test_preprocess_method(tmp_path=Path("data/processed")):
     #         assert abs(std - 1) < 1e-6  # Std should be approximately 1
 
 
-@pytest.mark.skip(reason="Raw data has NaN quality labels; cannot test __getitem__ without proper labels")
+@pytest.mark.skip(
+    reason="Raw data has NaN quality labels; cannot test __getitem__ without proper labels"
+)
 def test_getitem():
     """Test the __getitem__ method of the WineData class."""
     dataset = WineData(Path("data/raw/WineQT.csv"), download=True)

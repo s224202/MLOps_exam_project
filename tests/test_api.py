@@ -1,9 +1,7 @@
 from fastapi.testclient import TestClient
 from mlops_exam_project.api import app
-import pytest
 from unittest.mock import patch, MagicMock
 import torch
-import numpy as np
 
 client = TestClient(app)
 
@@ -80,7 +78,7 @@ def test_predict_response_structure():
     }
     response = client.post("/predict", json=features)
     json_response = response.json()
-    
+
     assert "message" in json_response
     assert "status_code" in json_response
     assert "prediction" in json_response
@@ -102,7 +100,7 @@ def test_predict_onnx_endpoint_exists():
         "sulphates": 0.56,
         "alcohol": 9.4,
     }
-    
+
     response = client.post("/predict_onnx", json=features)
     assert response.status_code == 200
     json_response = response.json()
@@ -135,10 +133,10 @@ def test_predict_with_model_error():
         "sulphates": 0.56,
         "alcohol": 9.4,
     }
-    
+
     mock_model = MagicMock()
     mock_model.side_effect = RuntimeError("Model error")
-    
+
     with patch("mlops_exam_project.api.WineQualityClassifier", mock_model):
         response = client.post("/predict", json=features)
         assert response.status_code == 200
@@ -197,7 +195,7 @@ def test_predict_with_multiple_samples():
             "alcohol": 10.0,
         },
     ]
-    
+
     for features in feature_sets:
         response = client.post("/predict", json=features)
         assert response.status_code == 200
@@ -230,7 +228,7 @@ def test_predict_returns_json():
         "alcohol": 9.4,
     }
     response = client.post("/predict", json=features)
-    
+
     # Verify response is valid JSON
     json_response = response.json()
     assert isinstance(json_response, dict)
@@ -255,7 +253,7 @@ def test_onnx_endpoint_response_structure():
     }
     response = client.post("/predict_onnx", json=features)
     json_response = response.json()
-    
+
     assert "message" in json_response
     assert "status_code" in json_response
     assert "prediction" in json_response

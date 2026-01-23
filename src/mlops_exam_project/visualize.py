@@ -28,18 +28,18 @@ DEVICE = torch.device(
 
 def get_model_predictions(model, dataloader, device=None):
     """Get predictions from model - testable helper function.
-    
+
     Args:
         model: Model to get predictions from
         dataloader: DataLoader with data
         device: Device to run on
-        
+
     Returns:
         Tuple of (predictions array, labels array)
     """
     if device is None:
         device = DEVICE
-        
+
     predictions = []
     labels = []
     with torch.no_grad():
@@ -52,16 +52,18 @@ def get_model_predictions(model, dataloader, device=None):
     return np.array(predictions), np.array(labels)
 
 
-def create_evaluation_visualizations(train_preds, train_labels, test_preds, test_labels, num_classes=6):
+def create_evaluation_visualizations(
+    train_preds, train_labels, test_preds, test_labels, num_classes=6
+):
     """Create evaluation visualizations - testable helper function.
-    
+
     Args:
         train_preds: Training predictions
         train_labels: Training labels
         test_preds: Test predictions
         test_labels: Test labels
         num_classes: Number of classes
-        
+
     Returns:
         Matplotlib figure
     """
@@ -164,7 +166,7 @@ def create_evaluation_visualizations(train_preds, train_labels, test_preds, test
             fontsize=12,
             fontweight="bold",
         )
-    
+
     return fig, train_acc, test_acc, per_class_acc
 
 

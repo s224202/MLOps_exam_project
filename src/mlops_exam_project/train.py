@@ -3,7 +3,6 @@ import torch
 import hydra
 import os
 import matplotlib.pyplot as plt
-import sys
 from omegaconf import DictConfig
 from pathlib import Path
 from loguru import logger as llogger
@@ -38,7 +37,7 @@ def train_core(
     learning_rate=0.001,
 ):
     """Core training logic - testable without Hydra.
-    
+
     Args:
         model: Model to train
         train_dataloader: Training data loader
@@ -46,16 +45,16 @@ def train_core(
         epochs: Number of epochs to train
         device: Device to train on
         learning_rate: Learning rate for optimizer
-        
+
     Returns:
         Tuple of (trained model, statistics dict)
     """
     if device is None:
         device = DEVICE
-    
+
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-    
+
     statistics = {
         "train_loss": [],
         "train_accuracy": [],
@@ -64,13 +63,13 @@ def train_core(
         "val_loss": [],
         "val_accuracy": [],
     }
-    
+
     for epoch in range(epochs):
         model.train()
         epoch_loss = 0.0
         epoch_correct = 0
         epoch_total = 0
-        
+
         for features, target in train_dataloader:
             features, target = features.to(device), target.to(device)
             optimizer.zero_grad()
@@ -78,20 +77,20 @@ def train_core(
             loss = loss_fn(y_pred, target)
             loss.backward()
             optimizer.step()
-            
+
             statistics["train_loss"].append(loss.item())
             accuracy = (y_pred.argmax(dim=1) == target).float().mean().item()
             statistics["train_accuracy"].append(accuracy)
-            
+
             epoch_loss += loss.item()
             epoch_correct += (y_pred.argmax(dim=1) == target).sum().item()
             epoch_total += target.size(0)
-        
+
         avg_loss = epoch_loss / len(train_dataloader)
         avg_accuracy = epoch_correct / epoch_total
         statistics["epoch_loss"].append(avg_loss)
         statistics["epoch_accuracy"].append(avg_accuracy)
-        
+
         model.eval()
         with torch.no_grad():
             val_accuracy = 0
@@ -107,10 +106,10 @@ def train_core(
                 val_steps += 1
             val_accuracy /= val_steps
             val_loss /= val_steps
-            
+
             statistics["val_loss"].append(val_loss)
             statistics["val_accuracy"].append(val_accuracy)
-    
+
     return model, statistics
 
 
