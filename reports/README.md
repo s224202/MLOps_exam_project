@@ -76,9 +76,9 @@ will check the repositories and the code to verify your answers.
 
 ### Week 2
 
-* [-] Write unit tests related to the data part of your code (M16)
+* [X] Write unit tests related to the data part of your code (M16)
 * [X] Write unit tests related to model construction and or model training (M16)
-* [ ] Calculate the code coverage (M16)
+* [X] Calculate the code coverage (M16)
 * [X] Get some continuous integration running on the GitHub repository (M17)
 * [-] Add caching and multi-os/python/pytorch testing to your continuous integration (M17)
 * [X] Add a linting step to your continuous integration (M17)
@@ -91,7 +91,7 @@ will check the repositories and the code to verify your answers.
 * [X] Create a FastAPI application that can do inference using your model (M22)
 * [ ] Deploy your model in GCP using either Functions or Run as the backend (M23)
 * [ ] Write API tests for your application and setup continues integration for these (M24)
-* [-] Load test your application (M24)
+* [ ] Load test your application (M24)
 * [-] Create a more specialized ML-deployment API using either ONNX or BentoML, or both (M25)
 * [-] Create a frontend for your API (M26)
 
@@ -148,7 +148,7 @@ s951108, s224202, s183737, s260014
 >
 > Answer:
 
---- question 3 fill here ---
+We did not use any major open-source frameworks beyond those covered in the course. All dependencies (PyTorch, FastAPI, Hydra, etc.) were frameworks taught in the course curriculum.
 
 ## Coding environment
 
@@ -168,14 +168,7 @@ s951108, s224202, s183737, s260014
 >
 > Answer:
 
-We have used the uv package to manage dependencies and packages in the project.
-To get a complete copy of our developement environment, one would have to:
-
-pip install uv
-uv venv <.venv> --python=3.12
-source .venv/bin/activate
-uv init <project-name>
-
+We used the uv package manager to manage dependencies for the project. This meant that the list of dependencies was automatically generated as we used 'uv add' to add new dependencies to the project. In order to get a complete copy of our development environment, a user would first have to install uv, then clone our repository. With the working directory set as the top of the project, the user can simply run 'uv sync --all-groups' in order to download and install the full list of dependencies. If the user was not interested in certain packages relating to the development process, such as pre-commit and ruff, they could simply run 'uv sync' to get the packages neccesary for running the code.
 
 ### Question 5
 
@@ -229,7 +222,7 @@ with actual bugs, although linting doesn't guarantee you reach your end goal.
 >
 > Answer:
 
---- question 7 fill here ---
+In total we have implemented 25 tests. We are testing data loading, preprocessing, and split functionality in test_data.py (10 tests). We test model construction, forward pass, parameter counting, and state dict functionality in test_model.py (5 tests). We have integration tests covering the full pipeline from data loading through training in test_integration.py (7 tests). Finally, we have API smoke tests in test_api.py (3 tests) verifying the FastAPI endpoints work correctly.
 
 ### Question 8
 
@@ -244,7 +237,7 @@ with actual bugs, although linting doesn't guarantee you reach your end goal.
 >
 > Answer:
 
---- question 8 fill here ---
+The total code coverage of our code is 93%, which includes all our source code in the src/mlops_exam_project directory. We are not at 100% coverage - the uncovered lines are primarily the `if __name__ == "__main__"` guards in our modules, which we intentionally exclude as they are entry points rather than core logic. Even with 100% code coverage, we would not trust the code to be error-free. Code coverage measures which lines are executed during tests, but it doesn't guarantee that all edge cases are tested, that the assertions are correct, or that the tests themselves are well-designed. High coverage is a good indicator of test thoroughness, but bugs can still exist in the logic, error handling, or integration between components.
 
 ### Question 9
 
@@ -277,7 +270,7 @@ the main branch is kept as well-working as possible.
 >
 > Answer:
 
---- question 10 fill here ---
+We did not use DVC for managing data in this project. However, DVC would have been beneficial for version controlling our wine quality dataset, especially if we had multiple versions of preprocessed data or if team members were experimenting with different data cleaning approaches. DVC would allow us to track changes to the dataset over time, share large data files efficiently through cloud storage (without committing them to Git), and ensure reproducibility by linking specific data versions to specific model training runs. This would be particularly useful if we were continuously updating our dataset with new wine samples or experimenting with different feature engineering strategies.
 
 ### Question 11
 
@@ -313,7 +306,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
---- question 12 fill here ---
+We used Hydra for configuration management with YAML config files stored in the configs/ directory. The main config file (config.yaml) includes data paths, model paths, and file names, while separate configs exist for model architecture (model/default.yaml) and training parameters (training/default.yaml). To run an experiment with default settings: `uv run python src/mlops_exam_project/train.py`. To override specific parameters: `uv run python src/mlops_exam_project/train.py training.learning_rate=0.001 training.batch_size=64`. Hydra automatically creates timestamped output directories for each run, making it easy to track different experiments.
 
 ### Question 13
 
@@ -328,7 +321,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
---- question 13 fill here ---
+We used Hydra configuration files to ensure reproducibility. Whenever an experiment is run, Hydra automatically saves the complete configuration (including all overrides) to a .hydra subdirectory in the output folder with a timestamp. This preserves all hyperparameters, data paths, and model settings used for that specific run. We also use logging (loguru) to record training progress, data paths, and model checkpoints. To reproduce an experiment, one would navigate to the specific output folder, inspect the saved config.yaml file in the .hydra directory, and re-run the training script with those exact parameters. The combination of version-controlled code (via Git), saved configurations (via Hydra), and comprehensive logging ensures that experiments can be replicated exactly.
 
 ### Question 14
 
@@ -360,8 +353,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
---- question 15 fill here ---
-
+For our project we developed multiple Docker images for different purposes. We have training dockerfiles (train.dockerfile, train_hydra.dockerfile, train_hydra_config_mounting.dockerfile) and evaluation dockerfiles (evaluate.dockerfile, evaluate_hydra.dockerfile). The Hydra versions integrate with our configuration system, while the config mounting variant allows external config files to be mounted at runtime. To build a training image: `docker build -f dockerfiles/train_hydra.dockerfile -t train:latest .`. To run it: `docker run train:latest`. The dockerfiles are located in the dockerfiles/ directory of our repository. Link to example dockerfile: https://github.com/s224202/MLOps_exam_project/blob/main/dockerfiles/train_hydra.dockerfile
 
 ### Question 16
 
@@ -376,7 +368,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
---- question 16 fill here ---
+Debugging methods varied among group members. Most team members used print statements and logging (loguru) to trace execution flow and inspect variable values during development. We also used VS Code's built-in debugger with breakpoints for more complex issues. The comprehensive logging we implemented in train.py helped us track down issues with data paths and Hydra's working directory changes. For testing, pytest's verbose output (`-v` flag) and traceback information helped identify failing test cases. We did not perform formal profiling of our code. Given more time, profiling would be valuable to identify bottlenecks in data preprocessing or training loops, but for our relatively small dataset and simple model architecture, performance was not a critical concern.
 
 ## Working in the cloud
 
@@ -417,18 +409,16 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
-![Bucket overview](figures/BucketOverview.png)
-![Build Bucket overview](figures/BucketBuildContent.png)
+--- question 19 fill here ---
 
 ### Question 20
 
 > **Upload 1-2 images of your GCP artifact registry, such that we can see the different docker images that you have**
-> **stored. You can take inspiration from ![this figure](figures/registry.png).**
+> **stored. You can take inspiration from [this figure](figures/registry.png).**
 >
 > Answer:
 
-![Container Registry](figures/ArtifactRegistry.png)
-![Container Registry, detailed content](figures/Artifact2.png)
+--- question 20 fill here ---
 
 ### Question 21
 
@@ -437,7 +427,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
-![Cloud Build history](figures/CloudBuild.png)
+--- question 21 fill here ---
 
 ### Question 22
 
@@ -469,7 +459,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
---- question 23 fill here ---
+We did manage to write an API for our model using FastAPI. The API is implemented in src/mlops_exam_project/api.py and includes a root endpoint (GET /) that returns a status message, and a predict endpoint (POST /predict) that accepts wine feature data and returns a quality prediction. The API handles model loading gracefully with try-except blocks to provide fallback dummy predictions if the model fails to load. We implemented proper HTTP status codes and JSON response formatting. The API uses uvicorn as the ASGI server for serving the FastAPI application. The implementation is simple but functional, providing a RESTful interface for model inference.
 
 ### Question 24
 
@@ -500,7 +490,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
---- question 25 fill here ---
+We implemented unit tests for our API using pytest in test_api.py. These tests verify that the API endpoints respond correctly and that the training workflow can be invoked. However, we did not perform load testing of the API. If we were to implement load testing, we would use a tool like Locust or Apache JMeter to simulate multiple concurrent users sending requests to the /predict endpoint. This would help us understand the API's throughput (requests per second), response time under load, and identify the breaking point where the service becomes unresponsive. Load testing would be especially important before deploying to production to ensure the API can handle expected traffic volumes.
 
 ### Question 26
 
@@ -515,7 +505,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
---- question 26 fill here ---
+We did not manage to implement monitoring for our deployed model. If we had implemented monitoring, it would help ensure the longevity of the application by tracking key metrics over time. We would want to monitor system metrics like CPU usage, memory consumption, request latency, and error rates to detect performance degradation or service outages. For the ML model specifically, we would track prediction distributions to detect data drift (when input data characteristics change over time) and model performance metrics if we had ground truth labels for incoming requests. Monitoring would alert us to issues like model degradation, unusual prediction patterns, or infrastructure problems before they impact users significantly.
 
 ## Overall discussion of project
 
@@ -567,7 +557,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
-![Overview of System Architecture](figures/architecture.drawio.png)
+--- question 29 fill here ---
 
 ### Question 30
 
