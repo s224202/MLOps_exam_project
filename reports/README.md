@@ -716,7 +716,7 @@ Our ML model was very modest and building Docker container was cheap.
 > Answer:
 
 
-![Overview of System Architecture](figures/architecture.drawio.png)
+![Overview of System Architecture](figures/Architecture.drawio.png)
 We each used our own PC (Windows, PC, Mac) and pushed to Github, so that this part was Git controlled. We then built Docker images based on local repo into the GCloud.
 
 
