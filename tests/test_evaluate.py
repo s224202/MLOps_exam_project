@@ -2,9 +2,13 @@
 
 import pytest
 import torch
+import numpy as np
 from pathlib import Path
 from unittest.mock import patch, MagicMock
+from torch.utils.data import DataLoader, TensorDataset
+from sklearn.metrics import classification_report, confusion_matrix
 from mlops_exam_project.model import WineQualityClassifier
+from mlops_exam_project.evaluate import evaluate_model
 
 
 @pytest.fixture
@@ -16,6 +20,38 @@ def sample_model():
         output_dim=6,
         dropout_rate=0.2,
     )
+
+
+@pytest.fixture
+def sample_dataloader():
+    """Create a sample dataloader for testing."""
+    features = torch.randn(32, 11)
+    targets = torch.randint(0, 6, (32,))
+    dataset = TensorDataset(features, targets)
+    return DataLoader(dataset, batch_size=8)
+
+
+def test_evaluate_model_function(sample_model, sample_dataloader):
+    """Test the evaluate_model core function."""
+    results = evaluate_model(sample_model, sample_dataloader, device="cpu", num_classes=6)
+    
+    # Verify results structure
+    assert "accuracy" in results
+    assert "correct" in results
+    assert "total" in results
+    assert "predictions" in results
+    assert "labels" in results
+    assert "confusion_matrix" in results
+    assert "report" in results
+    
+    # Verify values
+    assert isinstance(results["accuracy"], (float, np.floating))
+    assert 0 <= results["accuracy"] <= 1
+    assert results["total"] == 32
+    assert len(results["predictions"]) == 32
+    assert len(results["labels"]) == 32
+    assert results["confusion_matrix"].shape == (6, 6)
+    assert isinstance(results["report"], str)
 
 
 def test_model_can_load_and_predict(sample_model):
@@ -138,3 +174,106 @@ def test_device_compatibility():
         output = model(dummy_input)
     
     assert output.device.type == "cpu"
+
+
+def test_model_evaluation_workflow(sample_model):
+    """Test complete evaluation workflow like evaluate.py does."""
+    from sklearn.metrics import classification_report, confusion_matrix
+    from torch.utils.data import DataLoader, TensorDataset
+    
+    sample_model.eval()
+    
+    # Create test dataset
+    features = torch.randn(32, 11)
+    labels = torch.randint(0, 6, (32,))
+    dataset = TensorDataset(features, labels)
+    dataloader = DataLoader(dataset, batch_size=8)
+    
+    all_predictions = []
+    all_labels = []
+    correct = 0
+    total = 0
+
+    with torch.no_grad():
+        for features, batch_labels in dataloader:
+            outputs = sample_model(features)
+            predictions = outputs.argmax(dim=1)
+            all_predictions.extend(predictions.numpy())
+            all_labels.extend(batch_labels.numpy())
+            correct += (predictions == batch_labels).sum().item()
+            total += batch_labels.size(0)
+
+    # Calculate accuracy (like evaluate.py does)
+    accuracy = correct / total
+    
+    # Generate confusion matrix (like evaluate.py does)
+    cm = confusion_matrix(all_labels, all_predictions)
+    
+    # Generate classification report (like evaluate.py does)
+    report = classification_report(
+        all_labels,
+        all_predictions,
+        target_names=[f"Quality {i}" for i in range(6)],
+        digits=4,
+        zero_division=0,
+    )
+    
+    # Verify all outputs are valid
+    assert 0 <= accuracy <= 1
+    assert cm.shape == (6, 6)
+    assert "accuracy" in report
+    assert correct == sum([p == l for p, l in zip(all_predictions, all_labels)])
+
+
+def test_model_predictions_in_valid_range(sample_model):
+    """Test that model predictions are in valid range."""
+    sample_model.eval()
+    
+    dummy_input = torch.randn(10, 11)
+    
+    with torch.no_grad():
+        output = sample_model(dummy_input)
+    
+    # Predictions should have correct shape
+    assert output.shape == torch.Size([10, 6])
+    
+    # Get class predictions
+    predictions = output.argmax(dim=1)
+    assert torch.all(predictions >= 0) and torch.all(predictions < 6)
+
+
+def test_model_accuracy_calculation():
+    """Test accuracy calculation logic used in evaluate.py."""
+    # Simulate what evaluate.py does
+    predictions = [0, 1, 2, 3, 4, 5, 0, 1, 2, 3]
+    labels = [0, 1, 2, 3, 4, 5, 0, 1, 2, 3]
+    
+    correct = sum([p == l for p, l in zip(predictions, labels)])
+    total = len(labels)
+    accuracy = correct / total
+    
+    assert accuracy == 1.0
+    assert correct == 10
+    assert total == 10
+
+
+def test_hydra_config_loading_logic():
+    """Test the logic of loading and using config (simulating evaluate.py)."""
+    from pathlib import Path
+    
+    # Simulate what evaluate.py does with config
+    # It gets paths from config and combines them with project_root
+    project_root = Path(__file__).parent.parent.parent
+    
+    # Simulate config values
+    data_path_config = "data/processed"
+    model_path_config = "models"
+    
+    # Simulate path construction like evaluate.py does
+    data_path = project_root / data_path_config
+    model_path = project_root / model_path_config
+    
+    # Verify paths are constructed correctly
+    assert "data/processed" in str(data_path)
+    assert "models" in str(model_path)
+    assert project_root in data_path.parents or project_root == data_path.parent.parent.parent

@@ -7,8 +7,14 @@ import torch
 from sklearn.metrics import confusion_matrix
 import hydra
 from omegaconf import DictConfig
-from data import WineData
-from model import WineQualityClassifier as MyAwesomeModel
+
+# Handle imports for both Hydra context (relative) and test context (absolute)
+try:
+    from data import WineData
+    from model import WineQualityClassifier as MyAwesomeModel
+except ImportError:
+    from mlops_exam_project.data import WineData
+    from mlops_exam_project.model import WineQualityClassifier as MyAwesomeModel
 
 
 DEVICE = torch.device(
@@ -20,77 +26,48 @@ DEVICE = torch.device(
 )
 
 
-@hydra.main(version_base=None, config_path="../../configs", config_name="config")
-def visualize(cfg: DictConfig) -> None:
-    """
-    Create visualizations for the wine quality classifier.
-
+def get_model_predictions(model, dataloader, device=None):
+    """Get predictions from model - testable helper function.
+    
     Args:
-        cfg: Configuration dictionary with visualization parameters
+        model: Model to get predictions from
+        dataloader: DataLoader with data
+        device: Device to run on
+        
+    Returns:
+        Tuple of (predictions array, labels array)
     """
-    #  Hydra changes the working directory to outputs/<date>/<time> for each run. Use an absolute path or make the path relative to the project root.
-    #  The issue is that Hydra changes the working directory to outputs/<date>/<time> for each run.  Here we use an absolute path (or we ould make the path relative to the project root).
-    project_root = Path(
-        __file__
-    ).parent.parent.parent  # Getting the project root directory
-    # data_path = Path(cfg.data_path)
-    data_path = project_root / cfg.data_path
-    train_data_name = cfg.train_data_filename
-    test_data_name = cfg.test_data_filename
-    # test_data_name = cfg.test_data_filename
-    # model_path = Path(cfg.model_path)
-    model_path = project_root / cfg.model_path
-    model_name = cfg.model_name
+    if device is None:
+        device = DEVICE
+        
+    predictions = []
+    labels = []
+    with torch.no_grad():
+        for features, label in dataloader:
+            features = features.to(device)
+            outputs = model(features)
+            preds = outputs.argmax(dim=1).cpu().numpy()
+            predictions.extend(preds)
+            labels.extend(label.numpy())
+    return np.array(predictions), np.array(labels)
 
-    num_classes = 6
 
-    # print working directory
-    print(f"Working directory: {os.getcwd()}")
-    print(f"Project root: {project_root}")
-    print(f"Using device: {DEVICE}")
-    print(f"Training configuration: {cfg.training}")
-    print(f"Training data path: {data_path / train_data_name}")
-    print(f"Test data path: {data_path / test_data_name}")
-    print(f"Model will be saved to: {model_path / model_name}")
-    #  Initialize and load model
-    model = MyAwesomeModel(
-        input_dim=12,
-        hidden_dims=cfg.training.hidden_dims,
-        output_dim=6,
-        dropout_rate=cfg.training.dropout_rate,
-    ).to(DEVICE)
-    model.eval()
-    print("Model loaded successfully\n")
-
-    train_set = WineData(data_path / train_data_name, False)
-    test_set = WineData(data_path / test_data_name, False)
-    train_dataloader = torch.utils.data.DataLoader(
-        train_set, batch_size=cfg.training.batch_size, shuffle=False
-    )
-    test_dataloader = torch.utils.data.DataLoader(
-        test_set, batch_size=cfg.training.batch_size, shuffle=False
-    )
-
-    # Get predictions for both sets
-    def get_predictions(dataloader):
-        predictions = []
-        labels = []
-        with torch.no_grad():
-            for features, label in dataloader:
-                features = features.to(DEVICE)
-                outputs = model(features)
-                preds = outputs.argmax(dim=1).cpu().numpy()
-                predictions.extend(preds)
-                labels.extend(label.numpy())
-        return np.array(predictions), np.array(labels)
-
-    train_preds, train_labels = get_predictions(train_dataloader)
-    test_preds, test_labels = get_predictions(test_dataloader)
-
-    # Create  visualization
+def create_evaluation_visualizations(train_preds, train_labels, test_preds, test_labels, num_classes=6):
+    """Create evaluation visualizations - testable helper function.
+    
+    Args:
+        train_preds: Training predictions
+        train_labels: Training labels
+        test_preds: Test predictions
+        test_labels: Test labels
+        num_classes: Number of classes
+        
+    Returns:
+        Matplotlib figure
+    """
     fig = plt.figure(figsize=(20, 12))
 
-    # 1. Confusion Matrix for  Training Set
+    # 1. Confusion Matrix for Training Set
     ax1 = plt.subplot(2, 3, 2)
     cm_train = confusion_matrix(train_labels, train_preds)
     sns.heatmap(cm_train, annot=True, fmt="d", cmap="Blues", ax=ax1)
@@ -100,19 +77,11 @@ def visualize(cfg: DictConfig) -> None:
 
     # 2. Confusion Matrix for Test Set
     ax2 = plt.subplot(2, 3, 1)
-    cm = confusion_matrix(test_labels, test_preds)
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax2)
+    cm_test = confusion_matrix(test_labels, test_preds)
+    sns.heatmap(cm_test, annot=True, fmt="d", cmap="Blues", ax=ax2)
     ax2.set_title("Confusion Matrix (Test Set)", fontsize=14, fontweight="bold")
     ax2.set_xlabel("Predicted Label")
     ax2.set_ylabel("True Label")
-
-    # # 2. Normalized Confusion Matrix
-    # ax2 = plt.subplot(2, 3, 2)
-    # cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-    # sns.heatmap(cm_normalized, annot=True, fmt='.2f', cmap='YlOrRd', ax=ax2)
-    # ax2.set_title('Normalized Confusion Matrix (Test)', fontsize=14, fontweight='bold')
-    # ax2.set_xlabel('Predicted Label')
-    # ax2.set_ylabel('True Label')
 
     # 3. Class Distribution
     ax3 = plt.subplot(2, 3, 3)
@@ -195,6 +164,69 @@ def visualize(cfg: DictConfig) -> None:
             fontsize=12,
             fontweight="bold",
         )
+    
+    return fig, train_acc, test_acc, per_class_acc
+
+
+@hydra.main(version_base=None, config_path="../../configs", config_name="config")
+def visualize(cfg: DictConfig) -> None:
+    """
+    Create visualizations for the wine quality classifier.
+
+    Args:
+        cfg: Configuration dictionary with visualization parameters
+    """
+    #  Hydra changes the working directory to outputs/<date>/<time> for each run. Use an absolute path or make the path relative to the project root.
+    #  The issue is that Hydra changes the working directory to outputs/<date>/<time> for each run.  Here we use an absolute path (or we ould make the path relative to the project root).
+    project_root = Path(
+        __file__
+    ).parent.parent.parent  # Getting the project root directory
+    # data_path = Path(cfg.data_path)
+    data_path = project_root / cfg.data_path
+    train_data_name = cfg.train_data_filename
+    test_data_name = cfg.test_data_filename
+    # test_data_name = cfg.test_data_filename
+    # model_path = Path(cfg.model_path)
+    model_path = project_root / cfg.model_path
+    model_name = cfg.model_name
+
+    num_classes = 6
+
+    # print working directory
+    print(f"Working directory: {os.getcwd()}")
+    print(f"Project root: {project_root}")
+    print(f"Using device: {DEVICE}")
+    print(f"Training configuration: {cfg.training}")
+    print(f"Training data path: {data_path / train_data_name}")
+    print(f"Test data path: {data_path / test_data_name}")
+    print(f"Model will be saved to: {model_path / model_name}")
+    #  Initialize and load model
+    model = MyAwesomeModel(
+        input_dim=12,
+        hidden_dims=cfg.training.hidden_dims,
+        output_dim=6,
+        dropout_rate=cfg.training.dropout_rate,
+    ).to(DEVICE)
+    model.eval()
+    print("Model loaded successfully\n")
+
+    train_set = WineData(data_path / train_data_name, False)
+    test_set = WineData(data_path / test_data_name, False)
+    train_dataloader = torch.utils.data.DataLoader(
+        train_set, batch_size=cfg.training.batch_size, shuffle=False
+    )
+    test_dataloader = torch.utils.data.DataLoader(
+        test_set, batch_size=cfg.training.batch_size, shuffle=False
+    )
+
+    # Get predictions for both sets using helper function
+    train_preds, train_labels = get_model_predictions(model, train_dataloader, DEVICE)
+    test_preds, test_labels = get_model_predictions(model, test_dataloader, DEVICE)
+
+    # Create visualization using helper function
+    fig, train_acc, test_acc, per_class_acc = create_evaluation_visualizations(
+        train_preds, train_labels, test_preds, test_labels, num_classes
+    )
 
     # Save figure
     fig.savefig(
