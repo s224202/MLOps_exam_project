@@ -1,5 +1,8 @@
 docs/site/
 
+# wandb files
+wandb/
+
 # test cache
 manual_test/
 

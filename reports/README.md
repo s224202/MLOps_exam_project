@@ -362,6 +362,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 
 --- question 15 fill here ---
 
+
 ### Question 16
 
 > **When running into bugs while trying to run your experiments, how did you perform debugging? Additionally, did you**
@@ -416,16 +417,18 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
---- question 19 fill here ---
+![Bucket overview](figures/BucketOverview.png)
+![Build Bucket overview](figures/BucketBuildContent.png)
 
 ### Question 20
 
 > **Upload 1-2 images of your GCP artifact registry, such that we can see the different docker images that you have**
-> **stored. You can take inspiration from [this figure](figures/registry.png).**
+> **stored. You can take inspiration from ![this figure](figures/registry.png).**
 >
 > Answer:
 
---- question 20 fill here ---
+![Container Registry](figures/ArtifactRegistry.png)
+![Container Registry, detailed content](figures/Artifact2.png)
 
 ### Question 21
 
@@ -434,7 +437,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
---- question 21 fill here ---
+![Cloud Build history](figures/CloudBuild.png)
 
 ### Question 22
 
@@ -564,7 +567,7 @@ We set up Github actions for 1) Ruff linting, 2) Pre-commits and 3) unit-tests. 
 >
 > Answer:
 
---- question 29 fill here ---
+![Overview of System Architecture](figures/architecture.drawio.png)
 
 ### Question 30
 

@@ -1,27 +1,31 @@
-from mlops_exam_project.train import train
-from pathlib import Path
+from fastapi.testclient import TestClient
+from mlops_exam_project.api import app
+
+client = TestClient(app)
 
 
-def test_train():
-    """Test the train function."""
-    train(Path("data/raw/WineQT.csv"))
-    # If it runs without raising an exception, the test passes
+def test_read_root():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {"message": "OK", "status_code": 200}
 
 
-def test_train_with_default_path(capsys):
-    """Test the train function with default parameters."""
-    train()
-    captured = capsys.readouterr()
-    assert "Dataset size:" in captured.out
-    assert "Model parameters:" in captured.out
-    assert "Model state:" in captured.out
-
-
-def test_train_function_logic(capsys):
-    """Test the train function produces expected output."""
-    data_path = Path("data/raw/WineQT.csv")
-    train(data_path)
-    captured = capsys.readouterr()
-    output_lines = captured.out.strip().split("\n")
-    assert len(output_lines) >= 3
-    assert any("Dataset size:" in line for line in output_lines)
+def test_predict_dummy():
+    # Test the /predict endpoint with dummy features
+    features = {
+        "fixed_acidity": 7.4,
+        "volatile_acidity": 0.7,
+        "citric_acid": 0,
+        "residual_sugar": 1.9,
+        "chlorides": 0.076,
+        "free_sulfur_dioxide": 11,
+        "total_sulfur_dioxide": 34,
+        "density": 0.9978,
+        "pH": 3.51,
+        "sulphates": 0.56,
+        "alcohol": 9.4,
+    }
+    response = client.post("/predict", json=features)
+    assert response.status_code == 200
+    json_response = response.json()
+    assert "prediction" in json_response
